@@ -8,23 +8,59 @@ import { OpaqueColorValue, type StyleProp, type TextStyle } from "react-native";
 type IconMapping = Record<SymbolViewProps["name"], ComponentProps<typeof MaterialIcons>["name"]>;
 type IconSymbolName = keyof typeof MAPPING;
 
-/**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
- */
 const MAPPING = {
+  // Navigation
   "house.fill": "home",
+  "list.bullet": "list",
+  "lightbulb.fill": "lightbulb",
+  "gearshape.fill": "settings",
   "paperplane.fill": "send",
-  "chevron.left.forwardslash.chevron.right": "code",
+  // Actions
+  "plus": "add",
+  "plus.circle.fill": "add-circle",
+  "minus.circle.fill": "remove-circle",
+  "pencil": "edit",
+  "trash.fill": "delete",
+  "checkmark.circle.fill": "check-circle",
+  "xmark.circle.fill": "cancel",
+  "xmark": "close",
   "chevron.right": "chevron-right",
+  "chevron.left": "chevron-left",
+  "chevron.down": "expand-more",
+  "chevron.up": "expand-less",
+  "chevron.left.forwardslash.chevron.right": "code",
+  // Food / Preservation
+  "snowflake": "ac-unit",
+  "flame.fill": "local-fire-department",
+  "leaf.fill": "eco",
+  "clock.fill": "schedule",
+  "calendar": "calendar-today",
+  "bell.fill": "notifications",
+  "bell.slash.fill": "notifications-off",
+  "magnifyingglass": "search",
+  "arrow.up.arrow.down": "swap-vert",
+  "square.grid.2x2.fill": "grid-view",
+  "info.circle.fill": "info",
+  "exclamationmark.triangle.fill": "warning",
+  "checkmark.seal.fill": "verified",
+  "tag.fill": "label",
+  "cube.box.fill": "inventory-2",
+  "fork.knife": "restaurant",
+  "drop.fill": "water-drop",
+  "wind": "air",
+  "sun.max.fill": "wb-sunny",
+  "lock.fill": "lock",
+  "chart.bar.fill": "bar-chart",
+  "heart.fill": "favorite",
+  "star.fill": "star",
+  "photo": "photo",
+  "camera.fill": "camera-alt",
+  "arrow.clockwise": "refresh",
+  "square.and.arrow.up": "share",
+  "moon.fill": "dark-mode",
+  "sun.min.fill": "light-mode",
 } as IconMapping;
 
-/**
- * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
- */
 export function IconSymbol({
   name,
   size = 24,
