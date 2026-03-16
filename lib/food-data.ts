@@ -385,3 +385,229 @@ export function getFoodEmoji(name: string): string {
   if (lower.includes('yogurt')) return '🫙';
   return '🥫';
 }
+
+// ─── Barcode Lookup Table ─────────────────────────────────────────────────────
+// Maps common product barcodes to food suggestions
+export const BARCODE_LOOKUP: Record<string, { name: string; emoji: string; defaultDays: number; category: StorageLocation }> = {
+  // Common EAN-13 / UPC barcodes (sample set for demo purposes)
+  '5000112637922': { name: 'Coca-Cola', emoji: '🥤', defaultDays: 365, category: 'pantry' },
+  '5449000000996': { name: 'Coca-Cola Zero', emoji: '🥤', defaultDays: 365, category: 'pantry' },
+  '5000112548167': { name: 'Sprite', emoji: '🥤', defaultDays: 365, category: 'pantry' },
+  '4006381333931': { name: 'Haribo Gummies', emoji: '🍬', defaultDays: 180, category: 'pantry' },
+  '0016000275287': { name: 'Cheerios', emoji: '🥣', defaultDays: 270, category: 'pantry' },
+  '0038000845024': { name: 'Kellogg\'s Corn Flakes', emoji: '🥣', defaultDays: 270, category: 'pantry' },
+  '0041196898818': { name: 'Orange Juice', emoji: '🍊', defaultDays: 7, category: 'fridge' },
+  '0070470003016': { name: 'Whole Milk', emoji: '🥛', defaultDays: 7, category: 'fridge' },
+  '0011110038364': { name: 'Greek Yogurt', emoji: '🫙', defaultDays: 14, category: 'fridge' },
+  '0052100004396': { name: 'Cheddar Cheese', emoji: '🧀', defaultDays: 30, category: 'fridge' },
+  '0021130126026': { name: 'Sliced Bread', emoji: '🍞', defaultDays: 7, category: 'pantry' },
+  '0041415014529': { name: 'Peanut Butter', emoji: '🥜', defaultDays: 365, category: 'pantry' },
+  '0041196897132': { name: 'Apple Juice', emoji: '🍎', defaultDays: 7, category: 'fridge' },
+  '5010477348428': { name: 'Heinz Baked Beans', emoji: '🫘', defaultDays: 730, category: 'pantry' },
+  '5000157024466': { name: 'Heinz Tomato Ketchup', emoji: '🍅', defaultDays: 365, category: 'pantry' },
+};
+
+// ─── Meal Recipes for "Use It Up" ─────────────────────────────────────────────
+export interface MealRecipe {
+  id: string;
+  name: string;
+  emoji: string;
+  description: string;
+  prepTime: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  servings: number;
+  keyIngredients: string[]; // ingredient names that trigger this recipe
+  allIngredients: string[];
+  steps: string[];
+  tips: string;
+  tags: string[];
+}
+
+export const MEAL_RECIPES: MealRecipe[] = [
+  {
+    id: 'stir-fry',
+    name: 'Quick Veggie Stir-Fry',
+    emoji: '🥘',
+    description: 'A fast and flavorful stir-fry perfect for using up vegetables before they go bad.',
+    prepTime: '15 min',
+    difficulty: 'Easy',
+    servings: 2,
+    keyIngredients: ['Broccoli', 'Carrots', 'Bell Pepper', 'Spinach', 'Onions', 'Garlic'],
+    allIngredients: ['2 cups mixed vegetables', '2 cloves garlic', '2 tbsp soy sauce', '1 tbsp olive oil', '1 tsp ginger', 'Rice or noodles to serve'],
+    steps: [
+      'Heat oil in a wok or large pan over high heat.',
+      'Add garlic and ginger, stir for 30 seconds until fragrant.',
+      'Add harder vegetables (carrots, broccoli) first and stir-fry for 3 minutes.',
+      'Add softer vegetables (bell pepper, spinach) and stir-fry for 2 more minutes.',
+      'Add soy sauce and toss to combine.',
+      'Serve immediately over rice or noodles.',
+    ],
+    tips: 'Keep the heat high and keep everything moving for the best texture.',
+    tags: ['vegetarian', 'quick', 'healthy'],
+  },
+  {
+    id: 'frittata',
+    name: 'Leftover Frittata',
+    emoji: '🍳',
+    description: 'A versatile egg dish that works with almost any vegetables or cheese you have on hand.',
+    prepTime: '20 min',
+    difficulty: 'Easy',
+    servings: 4,
+    keyIngredients: ['Eggs', 'Cheese', 'Spinach', 'Tomatoes', 'Bell Pepper', 'Onions'],
+    allIngredients: ['6 eggs', '1/4 cup milk', '1 cup mixed vegetables', '1/2 cup cheese', 'Salt and pepper', '1 tbsp olive oil'],
+    steps: [
+      'Preheat oven to 375°F (190°C).',
+      'Whisk eggs with milk, salt, and pepper in a bowl.',
+      'Heat oil in an oven-safe skillet over medium heat.',
+      'Sauté vegetables until softened, about 5 minutes.',
+      'Pour egg mixture over vegetables and cook until edges set, 3-4 minutes.',
+      'Sprinkle cheese on top and transfer to oven.',
+      'Bake for 10-12 minutes until fully set and golden.',
+    ],
+    tips: 'Any combination of vegetables works — this is the perfect clean-out-the-fridge meal.',
+    tags: ['vegetarian', 'protein', 'brunch'],
+  },
+  {
+    id: 'banana-bread',
+    name: 'Overripe Banana Bread',
+    emoji: '🍌',
+    description: 'The best use for bananas that are too ripe to eat — they make the sweetest, moistest bread.',
+    prepTime: '65 min',
+    difficulty: 'Easy',
+    servings: 8,
+    keyIngredients: ['Bananas'],
+    allIngredients: ['3 very ripe bananas', '1/3 cup melted butter', '3/4 cup sugar', '1 egg', '1 tsp vanilla', '1 tsp baking soda', '1.5 cups flour'],
+    steps: [
+      'Preheat oven to 350°F (175°C). Grease a loaf pan.',
+      'Mash bananas in a large bowl until smooth.',
+      'Mix in melted butter, sugar, egg, and vanilla.',
+      'Stir in baking soda and a pinch of salt.',
+      'Fold in flour until just combined — do not overmix.',
+      'Pour into loaf pan and bake for 55-65 minutes.',
+      'Cool for 10 minutes before slicing.',
+    ],
+    tips: 'The blacker the banana, the sweeter and more flavorful the bread.',
+    tags: ['baking', 'sweet', 'snack'],
+  },
+  {
+    id: 'chicken-soup',
+    name: 'Simple Chicken Soup',
+    emoji: '🍲',
+    description: 'A comforting soup that makes the most of chicken and any vegetables you have.',
+    prepTime: '40 min',
+    difficulty: 'Easy',
+    servings: 4,
+    keyIngredients: ['Chicken Breast', 'Carrots', 'Onions', 'Garlic', 'Potatoes'],
+    allIngredients: ['500g chicken breast', '2 carrots, sliced', '2 stalks celery', '1 onion, diced', '3 cloves garlic', '1L chicken broth', 'Salt, pepper, herbs'],
+    steps: [
+      'Dice chicken into bite-sized pieces.',
+      'Sauté onion and garlic in a large pot until soft.',
+      'Add chicken and cook until no longer pink, about 5 minutes.',
+      'Add carrots, celery, and broth. Bring to a boil.',
+      'Reduce heat and simmer for 20 minutes.',
+      'Season with salt, pepper, and herbs to taste.',
+      'Serve with crusty bread.',
+    ],
+    tips: 'Add noodles or rice in the last 10 minutes for a heartier meal.',
+    tags: ['protein', 'comfort', 'winter'],
+  },
+  {
+    id: 'berry-smoothie',
+    name: 'Berry Preservation Smoothie',
+    emoji: '🫐',
+    description: 'Blend up berries that are about to go bad into a delicious smoothie or freeze for later.',
+    prepTime: '5 min',
+    difficulty: 'Easy',
+    servings: 2,
+    keyIngredients: ['Strawberries', 'Blueberries', 'Bananas', 'Grapes'],
+    allIngredients: ['2 cups mixed berries', '1 banana', '1 cup yogurt or milk', '1 tbsp honey', 'Ice cubes'],
+    steps: [
+      'Wash and hull berries.',
+      'Add all ingredients to a blender.',
+      'Blend on high until smooth.',
+      'Taste and adjust sweetness with honey.',
+      'Serve immediately or pour into ice cube trays to freeze for later.',
+    ],
+    tips: 'Freeze the smoothie in ice cube trays — pop them out and blend for a quick frozen treat later.',
+    tags: ['healthy', 'quick', 'vegan'],
+  },
+  {
+    id: 'tomato-sauce',
+    name: 'Fresh Tomato Sauce',
+    emoji: '🍅',
+    description: 'Transform ripe or overripe tomatoes into a rich pasta sauce that can be frozen for months.',
+    prepTime: '45 min',
+    difficulty: 'Easy',
+    servings: 6,
+    keyIngredients: ['Tomatoes', 'Garlic', 'Onions'],
+    allIngredients: ['1kg ripe tomatoes', '4 cloves garlic', '1 onion', '2 tbsp olive oil', 'Fresh basil', 'Salt and pepper', '1 tsp sugar'],
+    steps: [
+      'Score tomatoes with an X and blanch in boiling water for 30 seconds.',
+      'Peel, deseed, and roughly chop the tomatoes.',
+      'Sauté onion and garlic in olive oil until soft.',
+      'Add tomatoes and bring to a simmer.',
+      'Cook for 30 minutes, stirring occasionally, until thickened.',
+      'Add fresh basil, season with salt, pepper, and sugar.',
+      'Use immediately or freeze in portions for up to 3 months.',
+    ],
+    tips: 'This sauce freezes beautifully — make a big batch when tomatoes are plentiful.',
+    tags: ['vegan', 'freezable', 'Italian'],
+  },
+  {
+    id: 'fried-rice',
+    name: 'Leftover Fried Rice',
+    emoji: '🍚',
+    description: 'Day-old rice is actually perfect for fried rice — it fries up crispier than fresh rice.',
+    prepTime: '15 min',
+    difficulty: 'Easy',
+    servings: 3,
+    keyIngredients: ['Rice', 'Eggs', 'Carrots', 'Onions', 'Garlic'],
+    allIngredients: ['3 cups cooked rice (day-old)', '2 eggs', '1 cup mixed vegetables', '3 tbsp soy sauce', '2 cloves garlic', '2 tbsp sesame oil'],
+    steps: [
+      'Heat oil in a wok or large skillet over high heat.',
+      'Add garlic and stir-fry for 30 seconds.',
+      'Add vegetables and cook for 2-3 minutes.',
+      'Push everything to the side and scramble eggs in the pan.',
+      'Add rice and break up any clumps.',
+      'Add soy sauce and sesame oil, toss everything together.',
+      'Cook for 3-4 minutes until rice is heated through and slightly crispy.',
+    ],
+    tips: 'The key to great fried rice is high heat and not stirring too much — let it get a little crispy.',
+    tags: ['quick', 'Asian', 'budget'],
+  },
+  {
+    id: 'bread-pudding',
+    name: 'Stale Bread Pudding',
+    emoji: '🍞',
+    description: 'Transform stale bread into a rich, custardy dessert that tastes like it took all day.',
+    prepTime: '55 min',
+    difficulty: 'Medium',
+    servings: 6,
+    keyIngredients: ['Bread', 'Eggs', 'Milk', 'Butter'],
+    allIngredients: ['6 slices stale bread', '3 eggs', '2 cups milk', '1/4 cup sugar', '2 tbsp butter', '1 tsp vanilla', '1 tsp cinnamon'],
+    steps: [
+      'Preheat oven to 350°F (175°C). Butter a baking dish.',
+      'Tear bread into chunks and place in the baking dish.',
+      'Whisk eggs, milk, sugar, vanilla, and cinnamon together.',
+      'Pour custard mixture over bread and press down gently.',
+      'Let soak for 15 minutes.',
+      'Dot with butter and bake for 35-40 minutes until golden and set.',
+      'Serve warm with cream or ice cream.',
+    ],
+    tips: 'The staler the bread, the better it absorbs the custard. Day-old croissants make an incredible version.',
+    tags: ['dessert', 'baking', 'comfort'],
+  },
+];
+
+// Get recipes that match expiring food items
+export function getMatchingRecipes(expiringFoodNames: string[]): MealRecipe[] {
+  if (expiringFoodNames.length === 0) return [];
+  const lowerNames = expiringFoodNames.map(n => n.toLowerCase());
+  return MEAL_RECIPES.filter(recipe =>
+    recipe.keyIngredients.some(ingredient =>
+      lowerNames.some(name =>
+        name.includes(ingredient.toLowerCase()) || ingredient.toLowerCase().includes(name)
+      )
+    )
+  );
+}

@@ -10,7 +10,8 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useFoodContext } from '@/lib/food-context';
 import {
-  FoodItem, STORAGE_LOCATIONS, getDaysRemaining, formatDaysRemaining, getExpiryStatus
+  FoodItem, STORAGE_LOCATIONS, getDaysRemaining, formatDaysRemaining, getExpiryStatus,
+  getMatchingRecipes, MealRecipe
 } from '@/lib/food-data';
 
 function StatCard({ label, value, color, icon }: { label: string; value: number; color: string; icon: string }) {
@@ -51,6 +52,45 @@ function ExpiryItemCard({ item, onPress }: { item: FoodItem; onPress: () => void
   );
 }
 
+function MealCard({ recipe, onPress }: { recipe: MealRecipe; onPress: () => void }) {
+  const colors = useColors();
+  const difficultyColor = recipe.difficulty === 'Easy'
+    ? colors.success
+    : recipe.difficulty === 'Medium'
+    ? colors.warning
+    : colors.error;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.mealCard,
+        { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.85 : 1 }
+      ]}
+    >
+      <Text style={styles.mealEmoji}>{recipe.emoji}</Text>
+      <View style={styles.mealInfo}>
+        <Text style={[styles.mealName, { color: colors.foreground }]} numberOfLines={1}>
+          {recipe.name}
+        </Text>
+        <Text style={[styles.mealDesc, { color: colors.muted }]} numberOfLines={2}>
+          {recipe.description}
+        </Text>
+        <View style={styles.mealMeta}>
+          <View style={[styles.mealBadge, { backgroundColor: colors.primary + '15' }]}>
+            <IconSymbol name="clock.fill" size={11} color={colors.primary} />
+            <Text style={[styles.mealBadgeText, { color: colors.primary }]}>{recipe.prepTime}</Text>
+          </View>
+          <View style={[styles.mealBadge, { backgroundColor: difficultyColor + '15' }]}>
+            <Text style={[styles.mealBadgeText, { color: difficultyColor }]}>{recipe.difficulty}</Text>
+          </View>
+        </View>
+      </View>
+      <IconSymbol name="chevron.right" size={18} color={colors.muted} />
+    </Pressable>
+  );
+}
+
 export default function DashboardScreen() {
   const colors = useColors();
   const router = useRouter();
@@ -63,6 +103,12 @@ export default function DashboardScreen() {
       getDaysRemaining(a.expiryDate) - getDaysRemaining(b.expiryDate)
     );
   }, [items]);
+
+  // Get meal suggestions based on expiring/expired items
+  const mealSuggestions = useMemo(() => {
+    const urgentNames = urgentItems.map(i => i.name);
+    return getMatchingRecipes(urgentNames).slice(0, 4);
+  }, [urgentItems]);
 
   const today = new Date();
   const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 17 ? 'Good afternoon' : 'Good evening';
@@ -127,6 +173,42 @@ export default function DashboardScreen() {
                 />
               )}
             />
+          </View>
+        )}
+
+        {/* Use It Up — Meal Suggestions */}
+        {mealSuggestions.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <View>
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>🍳 Use It Up</Text>
+                <Text style={[styles.sectionSubtitle, { color: colors.muted }]}>
+                  Recipes for your expiring items
+                </Text>
+              </View>
+            </View>
+            <View style={styles.mealList}>
+              {mealSuggestions.map(recipe => (
+                <MealCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onPress={() => router.push({ pathname: '/meal-detail' as any, params: { id: recipe.id } })}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* No urgent items — show all recipes prompt */}
+        {urgentItems.length === 0 && items.length > 0 && (
+          <View style={[styles.allFreshBanner, { backgroundColor: colors.success + '12', borderColor: colors.success + '30' }]}>
+            <Text style={styles.allFreshEmoji}>🎉</Text>
+            <View>
+              <Text style={[styles.allFreshTitle, { color: colors.success }]}>All food is fresh!</Text>
+              <Text style={[styles.allFreshText, { color: colors.muted }]}>
+                No items expiring soon. Great job managing your inventory.
+              </Text>
+            </View>
           </View>
         )}
 
@@ -196,8 +278,9 @@ const styles = StyleSheet.create({
   statValue: { fontSize: 20, fontWeight: '800' },
   statLabel: { fontSize: 10, fontWeight: '600', marginTop: 2, textAlign: 'center' },
   section: { marginBottom: 24 },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
   sectionTitle: { fontSize: 17, fontWeight: '700' },
+  sectionSubtitle: { fontSize: 12, marginTop: 2 },
   seeAll: { fontSize: 14, fontWeight: '600' },
   horizontalList: { paddingRight: 8 },
   expiryCard: {
@@ -210,6 +293,33 @@ const styles = StyleSheet.create({
   expiryName: { fontSize: 11, fontWeight: '600', textAlign: 'center', marginBottom: 6 },
   expiryBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8 },
   expiryBadgeText: { fontSize: 10, fontWeight: '700' },
+  // Meal cards
+  mealList: { gap: 10 },
+  mealCard: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    padding: 14, borderRadius: 16, borderWidth: 1,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+  },
+  mealEmoji: { fontSize: 36 },
+  mealInfo: { flex: 1 },
+  mealName: { fontSize: 15, fontWeight: '700', marginBottom: 3 },
+  mealDesc: { fontSize: 12, lineHeight: 16, marginBottom: 6 },
+  mealMeta: { flexDirection: 'row', gap: 6 },
+  mealBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10,
+  },
+  mealBadgeText: { fontSize: 11, fontWeight: '700' },
+  // All fresh banner
+  allFreshBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    padding: 16, borderRadius: 16, borderWidth: 1, marginBottom: 24,
+  },
+  allFreshEmoji: { fontSize: 28 },
+  allFreshTitle: { fontSize: 15, fontWeight: '700' },
+  allFreshText: { fontSize: 12, marginTop: 2, lineHeight: 16 },
+  // Location grid
   locationGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   locationCard: {
     width: '47%', borderRadius: 16, padding: 14, alignItems: 'center',

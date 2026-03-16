@@ -8,6 +8,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useFoodContext } from '@/lib/food-context';
+import { useShoppingContext } from '@/lib/shopping-context';
 import {
   FoodItem, StorageLocation, STORAGE_LOCATIONS,
   getDaysRemaining, getExpiryStatus, formatDaysRemaining
@@ -66,6 +67,7 @@ export default function InventoryScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ filter?: string }>();
   const { items, deleteItem } = useFoodContext();
+  const { addItem: addToShoppingList } = useShoppingContext();
 
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | StorageLocation>(
@@ -90,6 +92,16 @@ export default function InventoryScreen() {
         onPress: async () => {
           if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           await deleteItem(item.id);
+          // Auto-add to shopping list
+          await addToShoppingList({
+            name: item.name,
+            emoji: item.emoji,
+            category: item.category,
+            quantity: item.quantity,
+            unit: item.unit,
+            checked: false,
+            source: 'auto',
+          });
         }
       }
     ]);

@@ -59,7 +59,12 @@ const MAPPING = {
   "square.and.arrow.up": "share",
   "moon.fill": "dark-mode",
   "sun.min.fill": "light-mode",
-} as IconMapping;
+  "cart.fill": "shopping-cart",
+  "cart.badge.plus": "add-shopping-cart",
+  "barcode.viewfinder": "qr-code-scanner",
+  "fork.knife.circle.fill": "restaurant-menu",
+  "checkmark": "check",
+} satisfies Partial<IconMapping>;
 
 export function IconSymbol({
   name,

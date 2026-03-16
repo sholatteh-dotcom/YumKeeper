@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, Platform, Alert, FlatList
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -26,16 +26,35 @@ export default function AddItemScreen() {
   const colors = useColors();
   const router = useRouter();
   const { addItem } = useFoodContext();
+  const params = useLocalSearchParams<{
+    prefillName?: string;
+    prefillCategory?: string;
+    prefillDays?: string;
+    prefillEmoji?: string;
+    prefillBarcode?: string;
+  }>();
 
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState<StorageLocation>('fridge');
+  const [name, setName] = useState(params.prefillName ?? '');
+  const [category, setCategory] = useState<StorageLocation>(
+    (params.prefillCategory as StorageLocation) ?? 'fridge'
+  );
   const [quantity, setQuantity] = useState('1');
   const [unit, setUnit] = useState('pcs');
   const [purchaseDate, setPurchaseDate] = useState(today());
-  const [expiryDate, setExpiryDate] = useState(addDays(7));
+  const [expiryDate, setExpiryDate] = useState(
+    params.prefillDays ? addDays(parseInt(params.prefillDays)) : addDays(7)
+  );
   const [notes, setNotes] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showUnitPicker, setShowUnitPicker] = useState(false);
+  const [barcodeScanned, setBarcodeScanned] = useState(!!params.prefillName);
+
+  // If prefilled from barcode, show a banner
+  useEffect(() => {
+    if (params.prefillName) {
+      setBarcodeScanned(true);
+    }
+  }, [params.prefillName]);
 
   const suggestions = useMemo(() => {
     if (!name.trim() || name.length < 1) return [];
@@ -70,7 +89,7 @@ export default function AddItemScreen() {
       purchaseDate,
       expiryDate,
       notes: notes.trim() || undefined,
-      emoji: getFoodEmoji(name.trim()),
+      emoji: params.prefillEmoji ?? getFoodEmoji(name.trim()),
       createdAt: new Date().toISOString(),
     };
 
@@ -101,19 +120,44 @@ export default function AddItemScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Barcode success banner */}
+        {barcodeScanned && (
+          <View style={[styles.barcodeBanner, { backgroundColor: colors.success + '18', borderColor: colors.success + '40' }]}>
+            <Text style={styles.barcodeBannerEmoji}>✅</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.barcodeBannerTitle, { color: colors.success }]}>Barcode Scanned!</Text>
+              <Text style={[styles.barcodeBannerText, { color: colors.muted }]}>
+                Details auto-filled. Review and adjust as needed.
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => setBarcodeScanned(false)}>
+              <IconSymbol name="xmark" size={16} color={colors.muted} />
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Food Name */}
         <View style={styles.fieldGroup}>
           <Text style={[styles.label, { color: colors.muted }]}>FOOD NAME</Text>
-          <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-            <TextInput
-              style={[styles.input, { color: colors.foreground }]}
-              placeholder="e.g. Apples, Chicken Breast..."
-              placeholderTextColor={colors.muted}
-              value={name}
-              onChangeText={v => { setName(v); setShowSuggestions(true); }}
-              onFocus={() => setShowSuggestions(true)}
-              returnKeyType="next"
-            />
+          <View style={styles.nameRow}>
+            <View style={[styles.inputContainer, { flex: 1, backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <TextInput
+                style={[styles.input, { color: colors.foreground }]}
+                placeholder="e.g. Apples, Chicken Breast..."
+                placeholderTextColor={colors.muted}
+                value={name}
+                onChangeText={v => { setName(v); setShowSuggestions(true); setBarcodeScanned(false); }}
+                onFocus={() => setShowSuggestions(true)}
+                returnKeyType="next"
+              />
+            </View>
+            {/* Barcode scan button */}
+            <TouchableOpacity
+              style={[styles.scanBtn, { backgroundColor: colors.primary + '15', borderColor: colors.primary + '40' }]}
+              onPress={() => router.push('/barcode-scanner' as any)}
+            >
+              <IconSymbol name="camera.fill" size={20} color={colors.primary} />
+            </TouchableOpacity>
           </View>
           {showSuggestions && suggestions.length > 0 && (
             <View style={[styles.suggestionsBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -296,8 +340,20 @@ const styles = StyleSheet.create({
   saveBtn: { paddingHorizontal: 16, paddingVertical: 7, borderRadius: 20 },
   saveBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   content: { padding: 16 },
+  barcodeBanner: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    padding: 12, borderRadius: 12, borderWidth: 1, marginBottom: 16,
+  },
+  barcodeBannerEmoji: { fontSize: 20 },
+  barcodeBannerTitle: { fontSize: 13, fontWeight: '700' },
+  barcodeBannerText: { fontSize: 12, marginTop: 1 },
   fieldGroup: { marginBottom: 20 },
   label: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8, marginBottom: 8 },
+  nameRow: { flexDirection: 'row', gap: 8, alignItems: 'center' },
+  scanBtn: {
+    width: 48, height: 48, borderRadius: 12, borderWidth: 1.5,
+    alignItems: 'center', justifyContent: 'center',
+  },
   inputContainer: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     borderRadius: 12, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 12,
