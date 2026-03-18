@@ -135,3 +135,11 @@
 - [x] Gate family sharing behind Family plan
 - [x] Add subscription section to Settings screen (current plan badge, manage/upgrade button)
 - [x] Add Pricing tab or button accessible from Dashboard and Settings
+
+## Free Trial & Upgrade Prompt
+- [x] Add 7-day free trial (trial_period_days: 7) to Stripe Checkout session
+- [x] Update Pricing screen to show "Start 7-day free trial" CTA copy
+- [x] Add upgrade prompt banner to Dashboard for free users
+- [x] Banner shows items used vs limit (e.g. "7/10 items used")
+- [x] Banner has "Upgrade to Fresh" CTA that opens Pricing screen
+- [x] Banner disappears for paid users

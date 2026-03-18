@@ -65,6 +65,10 @@ export const stripeRouter = router({
         customerId = customer.id;
       }
 
+      // Check if user has already used a trial (only offer once)
+      const hasUsedTrial = existing?.status === 'trialing' ||
+        (existing?.stripeSubscriptionId != null && existing?.status !== 'inactive');
+
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         payment_method_types: ["card"],
@@ -75,6 +79,8 @@ export const stripeRouter = router({
         metadata: { userId: String(user.id) },
         subscription_data: {
           metadata: { userId: String(user.id), tier: tierFromPriceId(input.priceId) },
+          // Offer 7-day free trial for first-time subscribers only
+          ...(hasUsedTrial ? {} : { trial_period_days: 7 }),
         },
       });
 

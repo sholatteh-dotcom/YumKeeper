@@ -9,6 +9,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useFoodContext } from '@/lib/food-context';
+import { useSubscription, FREE_ITEM_LIMIT } from '@/lib/subscription-context';
 import {
   FoodItem, STORAGE_LOCATIONS, getDaysRemaining, formatDaysRemaining, getExpiryStatus,
   getMatchingRecipes, MealRecipe
@@ -95,6 +96,11 @@ export default function DashboardScreen() {
   const colors = useColors();
   const router = useRouter();
   const { items, stats, getExpiringSoon, getExpired } = useFoodContext();
+  const { tier, maxItems } = useSubscription();
+  const isFreeUser = tier === 'free';
+  const itemsUsed = items.length;
+  const itemsRemaining = Math.max(0, FREE_ITEM_LIMIT - itemsUsed);
+  const usagePercent = Math.min(1, itemsUsed / FREE_ITEM_LIMIT);
 
   const urgentItems = useMemo(() => {
     const expiring = getExpiringSoon();
@@ -142,6 +148,61 @@ export default function DashboardScreen() {
             <Text style={styles.logoEmoji}>🫙</Text>
           </View>
         </View>
+
+        {/* Upgrade Prompt Banner — shown only to free users */}
+        {isFreeUser && (
+          <TouchableOpacity
+            style={[
+              styles.upgradeBanner,
+              {
+                backgroundColor: usagePercent >= 0.8
+                  ? colors.warning + '18'
+                  : colors.primary + '12',
+                borderColor: usagePercent >= 0.8
+                  ? colors.warning + '50'
+                  : colors.primary + '30',
+              },
+            ]}
+            onPress={() => router.push('/pricing' as any)}
+            activeOpacity={0.85}
+          >
+            <View style={styles.upgradeBannerLeft}>
+              <Text style={styles.upgradeBannerEmoji}>
+                {usagePercent >= 1 ? '🚫' : usagePercent >= 0.8 ? '⚠️' : '✨'}
+              </Text>
+              <View style={styles.upgradeBannerText}>
+                <Text style={[styles.upgradeBannerTitle, {
+                  color: usagePercent >= 0.8 ? colors.warning : colors.primary
+                }]}>
+                  {usagePercent >= 1
+                    ? 'Item limit reached!'
+                    : `${itemsUsed}/${FREE_ITEM_LIMIT} items used`}
+                </Text>
+                <Text style={[styles.upgradeBannerSub, { color: colors.muted }]}>
+                  {usagePercent >= 1
+                    ? 'Upgrade for unlimited items'
+                    : itemsRemaining <= 2
+                    ? `Only ${itemsRemaining} slot${itemsRemaining === 1 ? '' : 's'} left — upgrade for unlimited`
+                    : 'Start 7-day free trial for unlimited items'}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.upgradeBannerRight}>
+              <View style={[styles.upgradeProgressTrack, { backgroundColor: colors.border }]}>
+                <View style={[
+                  styles.upgradeProgressFill,
+                  {
+                    width: `${Math.round(usagePercent * 100)}%` as any,
+                    backgroundColor: usagePercent >= 0.8 ? colors.warning : colors.primary,
+                  }
+                ]} />
+              </View>
+              <Text style={[styles.upgradeCta, {
+                color: usagePercent >= 0.8 ? colors.warning : colors.primary
+              }]}>Upgrade →</Text>
+            </View>
+          </TouchableOpacity>
+        )}
 
         {/* Stats Row */}
         <View style={styles.statsRow}>
@@ -342,4 +403,18 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25, shadowRadius: 8, elevation: 8,
   },
+  // Upgrade banner
+  upgradeBanner: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    padding: 14, borderRadius: 16, borderWidth: 1, marginBottom: 20, gap: 10,
+  },
+  upgradeBannerLeft: { flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 },
+  upgradeBannerEmoji: { fontSize: 22 },
+  upgradeBannerText: { flex: 1 },
+  upgradeBannerTitle: { fontSize: 14, fontWeight: '700' },
+  upgradeBannerSub: { fontSize: 11, lineHeight: 15, marginTop: 2 },
+  upgradeBannerRight: { alignItems: 'flex-end', gap: 6, minWidth: 80 },
+  upgradeProgressTrack: { width: 72, height: 4, borderRadius: 2, overflow: 'hidden' },
+  upgradeProgressFill: { height: 4, borderRadius: 2 },
+  upgradeCta: { fontSize: 12, fontWeight: '700' },
 });

@@ -109,6 +109,8 @@ export default function PricingScreen() {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
   const createCheckoutMutation = trpc.stripe.createCheckoutSession.useMutation();
+  // Free users who have never subscribed get a trial
+  const isEligibleForTrial = currentTier === 'free';
 
   const annualSavings = (tier: TierConfig) => {
     const monthlyCost = tier.monthlyPrice * 12;
@@ -282,7 +284,11 @@ export default function PricingScreen() {
                     <ActivityIndicator color={isCurrentPlan ? tier.color : '#fff'} size="small" />
                   ) : (
                     <Text style={[styles.ctaBtnText, { color: isCurrentPlan ? tier.color : '#fff' }]}>
-                      {isCurrentPlan ? '✓ Current Plan' : `Get ${tier.name}`}
+                      {isCurrentPlan
+                        ? '✓ Current Plan'
+                        : isEligibleForTrial
+                        ? `Start 7-Day Free Trial`
+                        : `Get ${tier.name}`}
                     </Text>
                   )}
                 </TouchableOpacity>
@@ -292,6 +298,11 @@ export default function PricingScreen() {
         })}
 
         {/* Footer note */}
+        {isEligibleForTrial && (
+          <Text style={[styles.trialNote, { color: '#2D8A4E' }]}>
+            🎉 Your first 7 days are completely free — no charge until your trial ends.
+          </Text>
+        )}
         <Text style={[styles.footerNote, { color: colors.muted }]}>
           Cancel anytime. Subscriptions managed via Stripe. Secure payment processing.
         </Text>
@@ -345,4 +356,5 @@ const styles = StyleSheet.create({
   },
   ctaBtnText: { fontSize: 15, fontWeight: '700' },
   footerNote: { fontSize: 11, textAlign: 'center', lineHeight: 16, marginTop: 8 },
+  trialNote: { fontSize: 13, textAlign: 'center', lineHeight: 18, marginTop: 8, fontWeight: '600' },
 });
