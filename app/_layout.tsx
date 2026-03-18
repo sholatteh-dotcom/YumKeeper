@@ -85,21 +85,27 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
-          {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
-          {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="oauth/callback" />
-            <Stack.Screen name="add-item" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="barcode-scanner" options={{ presentation: 'fullScreenModal' }} />
-            <Stack.Screen name="item-detail" />
-            <Stack.Screen name="tip-detail" />
-            <Stack.Screen name="meal-detail" />
-            <Stack.Screen name="pricing" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
-          </Stack>
-          <StatusBar style="auto" />
+          <SubscriptionProvider>
+            <ShoppingProvider>
+              <FoodProvider>
+                {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
+                {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
+                {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="oauth/callback" />
+                  <Stack.Screen name="add-item" options={{ presentation: 'modal' }} />
+                  <Stack.Screen name="barcode-scanner" options={{ presentation: 'fullScreenModal' }} />
+                  <Stack.Screen name="item-detail" />
+                  <Stack.Screen name="tip-detail" />
+                  <Stack.Screen name="meal-detail" />
+                  <Stack.Screen name="pricing" options={{ presentation: 'modal' }} />
+                  <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+                </Stack>
+                <StatusBar style="auto" />
+              </FoodProvider>
+            </ShoppingProvider>
+          </SubscriptionProvider>
         </QueryClientProvider>
       </trpc.Provider>
     </GestureHandlerRootView>
@@ -110,13 +116,13 @@ export default function RootLayout() {
   if (shouldOverrideSafeArea) {
     return (
       <ThemeProvider>
-      <SafeAreaProvider initialMetrics={providerInitialMetrics}>
-        <SafeAreaFrameContext.Provider value={frame}>
-          <SafeAreaInsetsContext.Provider value={insets}>
-            <SubscriptionProvider><ShoppingProvider><FoodProvider>{content}</FoodProvider></ShoppingProvider></SubscriptionProvider>
-          </SafeAreaInsetsContext.Provider>
-        </SafeAreaFrameContext.Provider>
-      </SafeAreaProvider>
+        <SafeAreaProvider initialMetrics={providerInitialMetrics}>
+          <SafeAreaFrameContext.Provider value={frame}>
+            <SafeAreaInsetsContext.Provider value={insets}>
+              {content}
+            </SafeAreaInsetsContext.Provider>
+          </SafeAreaFrameContext.Provider>
+        </SafeAreaProvider>
       </ThemeProvider>
     );
   }
@@ -124,7 +130,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <SafeAreaProvider initialMetrics={providerInitialMetrics}>
-        <SubscriptionProvider><ShoppingProvider><FoodProvider>{content}</FoodProvider></ShoppingProvider></SubscriptionProvider>
+        {content}
       </SafeAreaProvider>
     </ThemeProvider>
   );
