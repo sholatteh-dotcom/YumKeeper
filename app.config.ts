@@ -28,11 +28,11 @@ const schemeFromBundleId = `manus${timestamp}`;
 
 const env = {
   // App branding - update these values directly (do not use env vars)
-  appName: "FreshKeep",
+  appName: "YumKeeper",
   appSlug: "food-preservation-app",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-DK4GPqQbqnoU4DLTv6KWJr.png",
+  logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-Ni5qpTnLRT9ssGGaR5C8da.png",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,
@@ -89,7 +89,7 @@ const config: ExpoConfig = {
     [
       "expo-camera",
       {
-        "cameraPermission": "Allow FreshKeep to access your camera to scan product barcodes."
+        "cameraPermission": "Allow YumKeeper to access your camera to scan product barcodes."
       }
     ],
     [

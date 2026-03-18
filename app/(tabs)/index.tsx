@@ -135,7 +135,7 @@ export default function DashboardScreen() {
         <View style={styles.header}>
           <View>
             <Text style={[styles.greeting, { color: colors.muted }]}>{greeting} 👋</Text>
-            <Text style={[styles.appTitle, { color: colors.foreground }]}>FreshKeep</Text>
+            <Text style={[styles.appTitle, { color: colors.foreground }]}>YumKeeper</Text>
             <Text style={[styles.dateText, { color: colors.muted }]}>{dateStr}</Text>
           </View>
           <View style={[styles.logoCircle, { backgroundColor: colors.primary + '15' }]}>

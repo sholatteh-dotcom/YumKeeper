@@ -61,7 +61,7 @@ export async function scheduleExpiryNotifications(
 
         await Notifications.scheduleNotificationAsync({
           content: {
-            title: '🫙 FreshKeep Alert',
+            title: '🫙 YumKeeper Alert',
             body: message,
             data: { itemId: item.id },
             sound: true,
@@ -86,7 +86,7 @@ export async function scheduleTestNotification(item: FoodItem): Promise<void> {
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: '🫙 FreshKeep Alert',
+      title: '🫙 YumKeeper Alert',
       body: `${item.emoji} ${item.name} is expiring soon! Check your inventory.`,
       data: { itemId: item.id },
     },

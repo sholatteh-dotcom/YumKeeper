@@ -77,7 +77,7 @@ export default function SettingsScreen() {
         {/* App Info Card */}
         <View style={[styles.appCard, { backgroundColor: colors.primary }]}>
           <Text style={styles.appEmoji}>🫙</Text>
-          <Text style={styles.appName}>FreshKeep</Text>
+          <Text style={styles.appName}>YumKeeper</Text>
           <Text style={styles.appTagline}>Keep it fresh, waste less</Text>
           <View style={styles.appStats}>
             <View style={styles.appStatItem}>
@@ -167,7 +167,7 @@ export default function SettingsScreen() {
         <View style={[styles.tipsBox, { backgroundColor: colors.primary + '15', borderColor: colors.primary + '30' }]}>
           <Text style={[styles.tipsBoxTitle, { color: colors.primary }]}>💡 Did you know?</Text>
           <Text style={[styles.tipsBoxText, { color: colors.foreground }]}>
-            The average household wastes about 30% of the food it purchases. FreshKeep helps you track expiry dates and learn preservation techniques to reduce waste and save money.
+            The average household wastes about 30% of the food it purchases. YumKeeper helps you track expiry dates and learn preservation techniques to reduce waste and save money.
           </Text>
         </View>
 

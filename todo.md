@@ -96,3 +96,10 @@
 - [x] Show recipes based on items expiring within 3 days
 - [x] Meal detail screen with ingredients and steps
 - [x] "Mark as used" action to remove items from inventory
+
+## Rebranding: FreshKeep → YumKeeper
+- [x] Generate new YumKeeper logo (playful, friendly style)
+- [x] Update all icon asset files (icon.png, splash-icon.png, favicon.png, android-icon-foreground.png)
+- [x] Update app.config.ts appName to "YumKeeper"
+- [x] Update logoUrl in app.config.ts
+- [x] Update all "FreshKeep" text references in app screens to "YumKeeper"

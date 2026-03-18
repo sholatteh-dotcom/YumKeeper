@@ -62,7 +62,7 @@ export default function BarcodeScannerScreen() {
             Camera Permission Required
           </Text>
           <Text style={[styles.permText, { color: colors.muted }]}>
-            FreshKeep needs camera access to scan product barcodes and auto-fill food details.
+            YumKeeper needs camera access to scan product barcodes and auto-fill food details.
           </Text>
           <TouchableOpacity
             style={[styles.permBtn, { backgroundColor: colors.primary }]}
