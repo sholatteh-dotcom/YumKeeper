@@ -19,6 +19,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { FoodProvider } from "@/lib/food-context";
 import { ShoppingProvider } from "@/lib/shopping-context";
+import { SubscriptionProvider } from "@/lib/subscription-context";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -95,6 +96,8 @@ export default function RootLayout() {
             <Stack.Screen name="item-detail" />
             <Stack.Screen name="tip-detail" />
             <Stack.Screen name="meal-detail" />
+            <Stack.Screen name="pricing" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>
@@ -110,7 +113,7 @@ export default function RootLayout() {
       <SafeAreaProvider initialMetrics={providerInitialMetrics}>
         <SafeAreaFrameContext.Provider value={frame}>
           <SafeAreaInsetsContext.Provider value={insets}>
-            <ShoppingProvider><FoodProvider>{content}</FoodProvider></ShoppingProvider>
+            <SubscriptionProvider><ShoppingProvider><FoodProvider>{content}</FoodProvider></ShoppingProvider></SubscriptionProvider>
           </SafeAreaInsetsContext.Provider>
         </SafeAreaFrameContext.Provider>
       </SafeAreaProvider>
@@ -121,7 +124,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <SafeAreaProvider initialMetrics={providerInitialMetrics}>
-        <ShoppingProvider><FoodProvider>{content}</FoodProvider></ShoppingProvider>
+        <SubscriptionProvider><ShoppingProvider><FoodProvider>{content}</FoodProvider></ShoppingProvider></SubscriptionProvider>
       </SafeAreaProvider>
     </ThemeProvider>
   );

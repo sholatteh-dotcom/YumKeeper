@@ -8,6 +8,11 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useFoodContext } from '@/lib/food-context';
+import { useSubscription } from '@/lib/subscription-context';
+import { useRouter } from 'expo-router';
+import { trpc } from '@/lib/trpc';
+import { useAuth } from '@/hooks/use-auth';
+import { Linking } from 'react-native';
 
 function SettingRow({
   icon, label, subtitle, right, onPress, danger
@@ -43,7 +48,24 @@ function SectionHeader({ title }: { title: string }) {
 export default function SettingsScreen() {
   const colors = useColors();
   const colorScheme = useColorScheme();
+  const router = useRouter();
   const { items, stats } = useFoodContext();
+  const subscription = useSubscription();
+  const { isAuthenticated } = useAuth();
+  const createPortalMutation = trpc.stripe.createPortalSession.useMutation();
+
+  const handleManageSubscription = async () => {
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
+      const { url } = await createPortalMutation.mutateAsync({ returnUrl: `${apiUrl}/` });
+      if (url) await Linking.openURL(url);
+    } catch {
+      Alert.alert('Error', 'Could not open subscription management. Please try again.');
+    }
+  };
+
+  const tierLabel = subscription.tier === 'free' ? 'Free Plan' : subscription.tier === 'fresh' ? '🥦 Fresh Plan' : '🏡 Family Plan';
+  const tierColor = subscription.tier === 'free' ? colors.muted : '#2D8A4E';
 
   const [notif1Day, setNotif1Day] = useState(true);
   const [notif3Days, setNotif3Days] = useState(true);
@@ -95,6 +117,50 @@ export default function SettingsScreen() {
               <Text style={styles.appStatLabel}>Expiring</Text>
             </View>
           </View>
+        </View>
+
+        {/* Subscription */}
+        <SectionHeader title="Subscription" />
+        <View style={[styles.section, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <SettingRow
+            icon="⭐"
+            label="Current Plan"
+            subtitle={tierLabel}
+            right={<Text style={{ fontSize: 13, fontWeight: '700', color: tierColor }}>{subscription.tier === 'free' ? 'Free' : 'Active'}</Text>}
+          />
+          {subscription.tier === 'free' ? (
+            <SettingRow
+              icon="🚀"
+              label="Upgrade to Fresh"
+              subtitle="Unlimited items, barcode scanner, all tips"
+              onPress={() => router.push('/pricing' as any)}
+            />
+          ) : (
+            <>
+              {subscription.currentPeriodEnd && (
+                <SettingRow
+                  icon="📅"
+                  label="Renews"
+                  subtitle={new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                />
+              )}
+              {subscription.cancelAtPeriodEnd && (
+                <SettingRow
+                  icon="⚠️"
+                  label="Cancels at period end"
+                  subtitle="Your plan will revert to Free after the current period"
+                />
+              )}
+              {isAuthenticated && (
+                <SettingRow
+                  icon="⚙️"
+                  label="Manage Subscription"
+                  subtitle="Change plan, update payment, or cancel"
+                  onPress={handleManageSubscription}
+                />
+              )}
+            </>
+          )}
         </View>
 
         {/* Notifications */}

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, subscriptions, InsertSubscription, Subscription } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,38 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ─── Subscription helpers ────────────────────────────────────────────────────
+
+export async function getSubscriptionByUserId(userId: number): Promise<Subscription | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getSubscriptionByStripeCustomerId(customerId: string): Promise<Subscription | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(subscriptions).where(eq(subscriptions.stripeCustomerId, customerId)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function upsertSubscription(data: InsertSubscription): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const existing = await db.select().from(subscriptions).where(eq(subscriptions.userId, data.userId)).limit(1);
+  if (existing.length > 0) {
+    await db.update(subscriptions).set({ ...data, updatedAt: new Date() }).where(eq(subscriptions.userId, data.userId));
+  } else {
+    await db.insert(subscriptions).values(data);
+  }
+}
+
+export async function updateSubscriptionByCustomerId(
+  customerId: string,
+  data: Partial<InsertSubscription>
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(subscriptions).set({ ...data, updatedAt: new Date() }).where(eq(subscriptions.stripeCustomerId, customerId));
+}

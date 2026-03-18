@@ -6,6 +6,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import { registerStripeWebhook } from "../stripe-webhook";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
@@ -50,6 +51,9 @@ async function startServer() {
     }
     next();
   });
+
+  // Register Stripe webhook BEFORE express.json() so raw body is available
+  registerStripeWebhook(app);
 
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

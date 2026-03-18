@@ -8,6 +8,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useFoodContext } from '@/lib/food-context';
+import { useSubscription } from '@/lib/subscription-context';
 import {
   FoodItem, StorageLocation, STORAGE_LOCATIONS, UNITS, FOOD_SUGGESTIONS, getFoodEmoji
 } from '@/lib/food-data';
@@ -33,6 +34,9 @@ export default function AddItemScreen() {
     prefillEmoji?: string;
     prefillBarcode?: string;
   }>();
+
+  const { items } = useFoodContext();
+  const subscription = useSubscription();
 
   const [name, setName] = useState(params.prefillName ?? '');
   const [category, setCategory] = useState<StorageLocation>(
@@ -71,6 +75,18 @@ export default function AddItemScreen() {
   };
 
   const handleSave = async () => {
+    // Check item limit for free tier
+    if (!subscription.canAddItems(items.length)) {
+      Alert.alert(
+        '10-Item Limit Reached',
+        'Free accounts can track up to 10 items. Upgrade to Fresh for unlimited items.',
+        [
+          { text: 'Not Now', style: 'cancel' },
+          { text: 'Upgrade', onPress: () => router.push('/pricing' as any) },
+        ]
+      );
+      return;
+    }
     if (!name.trim()) {
       Alert.alert('Missing Name', 'Please enter a food item name.');
       return;
@@ -154,7 +170,13 @@ export default function AddItemScreen() {
             {/* Barcode scan button */}
             <TouchableOpacity
               style={[styles.scanBtn, { backgroundColor: colors.primary + '15', borderColor: colors.primary + '40' }]}
-              onPress={() => router.push('/barcode-scanner' as any)}
+              onPress={() => {
+                if (!subscription.canUseBarcodeScanner) {
+                  router.push({ pathname: '/paywall', params: { feature: 'barcode' } } as any);
+                } else {
+                  router.push('/barcode-scanner' as any);
+                }
+              }}
             >
               <IconSymbol name="camera.fill" size={20} color={colors.primary} />
             </TouchableOpacity>

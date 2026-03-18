@@ -8,6 +8,8 @@ import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useShoppingContext, ShoppingItem } from '@/lib/shopping-context';
+import { useSubscription } from '@/lib/subscription-context';
+import { useRouter } from 'expo-router';
 import { STORAGE_LOCATIONS, FOOD_SUGGESTIONS, getFoodEmoji, StorageLocation } from '@/lib/food-data';
 
 const CATEGORY_FILTERS = [
@@ -20,7 +22,31 @@ const CATEGORY_FILTERS = [
 
 export default function ShoppingScreen() {
   const colors = useColors();
+  const router = useRouter();
+  const subscription = useSubscription();
   const { items, addItem, toggleItem, deleteItem, clearChecked, clearAll, uncheckedCount, checkedCount } = useShoppingContext();
+
+  // Show paywall for free users
+  if (!subscription.canUseShoppingList && !subscription.isLoading) {
+    return (
+      <ScreenContainer>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32, gap: 16 }}>
+          <Text style={{ fontSize: 56 }}>🛒</Text>
+          <Text style={{ fontSize: 22, fontWeight: '800', color: colors.foreground, textAlign: 'center' }}>Shopping List</Text>
+          <Text style={{ fontSize: 14, color: colors.muted, textAlign: 'center', lineHeight: 20 }}>
+            Auto-generate a restock list when items are consumed, and manage your grocery runs in one place.
+          </Text>
+          <TouchableOpacity
+            style={{ backgroundColor: '#2D8A4E', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 14, marginTop: 8 }}
+            onPress={() => router.push('/pricing' as any)}
+          >
+            <Text style={{ color: '#fff', fontWeight: '700', fontSize: 15 }}>🥦 Upgrade to Fresh</Text>
+          </TouchableOpacity>
+          <Text style={{ fontSize: 12, color: colors.muted }}>$1.67/month billed annually</Text>
+        </View>
+      </ScreenContainer>
+    );
+  }
 
   const [newItemName, setNewItemName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'all' | StorageLocation>('all');

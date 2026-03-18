@@ -7,6 +7,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { PRESERVATION_TIPS, PreservationTip, PreservationCategory } from '@/lib/food-data';
+import { useSubscription } from '@/lib/subscription-context';
 
 const CATEGORIES: { key: PreservationCategory; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -25,7 +26,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   Hard: '#E53E3E',
 };
 
-function TipCard({ tip, onPress }: { tip: PreservationTip; onPress: () => void }) {
+function TipCard({ tip, onPress, locked }: { tip: PreservationTip; onPress: () => void; locked?: boolean }) {
   const colors = useColors();
   const diffColor = DIFFICULTY_COLORS[tip.difficulty] ?? colors.muted;
 
@@ -37,6 +38,12 @@ function TipCard({ tip, onPress }: { tip: PreservationTip; onPress: () => void }
         { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.85 : 1 }
       ]}
     >
+      {locked && (
+        <View style={[styles.lockOverlay, { backgroundColor: colors.surface + 'E0' }]}>
+          <Text style={{ fontSize: 24 }}>🔒</Text>
+          <Text style={{ fontSize: 11, color: colors.muted, fontWeight: '600', marginTop: 4, textAlign: 'center' }}>Fresh Plan</Text>
+        </View>
+      )}
       <Text style={styles.tipEmoji}>{tip.emoji}</Text>
       <Text style={[styles.tipTitle, { color: colors.foreground }]} numberOfLines={2}>{tip.title}</Text>
       <View style={styles.tipMeta}>
@@ -52,6 +59,7 @@ function TipCard({ tip, onPress }: { tip: PreservationTip; onPress: () => void }
 export default function TipsScreen() {
   const colors = useColors();
   const router = useRouter();
+  const subscription = useSubscription();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState<PreservationCategory>('all');
 
@@ -160,12 +168,22 @@ export default function TipsScreen() {
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>Try a different search or category</Text>
           </View>
         }
-        renderItem={({ item: tip }) => (
-          <TipCard
-            tip={tip}
-            onPress={() => router.push({ pathname: '/tip-detail' as any, params: { id: tip.id } })}
-          />
-        )}
+        renderItem={({ item: tip, index }) => {
+          const isLocked = !subscription.canSeeAllTips && index >= 3;
+          return (
+            <TipCard
+              tip={tip}
+              onPress={() => {
+                if (isLocked) {
+                  router.push({ pathname: '/paywall', params: { feature: 'tips' } } as any);
+                } else {
+                  router.push({ pathname: '/tip-detail' as any, params: { id: tip.id } });
+                }
+              }}
+              locked={isLocked}
+            />
+          );
+        }}
       />
     </ScreenContainer>
   );
@@ -207,6 +225,11 @@ const styles = StyleSheet.create({
     flex: 1, borderRadius: 16, padding: 14, borderWidth: 1,
     shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
+    overflow: 'hidden',
+  },
+  lockOverlay: {
+    ...StyleSheet.absoluteFillObject, zIndex: 10,
+    alignItems: 'center', justifyContent: 'center', borderRadius: 16,
   },
   tipEmoji: { fontSize: 32, marginBottom: 8 },
   tipTitle: { fontSize: 14, fontWeight: '700', marginBottom: 8, lineHeight: 20 },

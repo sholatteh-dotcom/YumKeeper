@@ -103,3 +103,35 @@
 - [x] Update app.config.ts appName to "YumKeeper"
 - [x] Update logoUrl in app.config.ts
 - [x] Update all "FreshKeep" text references in app screens to "YumKeeper"
+
+## UI Redesign: Food Photography + One-Tap Interface
+- [ ] Generate high-saturation food photography for 4 storage categories (Fridge, Freezer, Pantry, Cellar)
+- [ ] Generate hero banner food photography for Dashboard
+- [ ] Generate food photography for Preservation Tips categories
+- [ ] Redesign Dashboard: full-width photo hero, one-tap quick-action row, photo-backed category cards
+- [ ] Redesign Inventory: photo-backed food cards with one-tap delete/edit/detail actions
+- [ ] Redesign Add Item: visual category picker with food photos, one-tap date shortcuts
+- [ ] Redesign Tips screen: full-bleed photo cards for each technique
+- [ ] Redesign Shopping screen: photo-backed category sections, one-tap check-off
+- [ ] Update theme colors to match high-saturation photography palette
+
+## Payment & Subscription (Stripe)
+- [x] Read server/README.md for backend setup guidance
+- [x] Configure Stripe secret key and webhook secret as environment secrets
+- [x] Install stripe npm package on server
+- [x] Create Stripe products and prices (Fresh monthly/annual, Family monthly/annual)
+- [x] Build /api/subscription/create-checkout-session endpoint
+- [x] Build /api/subscription/webhook endpoint (handle checkout.session.completed, customer.subscription.*)
+- [x] Build /api/subscription/status endpoint (return current plan for user)
+- [x] Build /api/subscription/portal endpoint (Stripe customer portal for manage/cancel)
+- [x] Create SubscriptionContext to hold plan state app-wide
+- [x] Build Pricing screen with 3 tier cards (Free, Fresh, Family) and monthly/annual toggle
+- [x] Build Paywall modal that triggers when free-tier limit is hit
+- [x] Gate barcode scanner behind Fresh+ plan
+- [x] Gate shopping list behind Fresh+ plan
+- [x] Gate notifications behind Fresh+ plan
+- [x] Gate tips beyond 3 behind Fresh+ plan
+- [x] Gate items beyond 10 behind Fresh+ plan (show paywall on add)
+- [x] Gate family sharing behind Family plan
+- [x] Add subscription section to Settings screen (current plan badge, manage/upgrade button)
+- [x] Add Pricing tab or button accessible from Dashboard and Settings
