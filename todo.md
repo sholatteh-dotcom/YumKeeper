@@ -166,3 +166,15 @@
 ## EAS Project ID Configuration
 - [x] Get EAS projectId from user (via eas init or Expo dashboard)
 - [x] Add extra.eas.projectId to app.config.ts (369cf431-4f4b-4518-ac98-dfa01d9b90a6)
+
+## EAS Build Enhancements
+- [x] Install expo-updates package
+- [x] Add expo-updates plugin to app.config.ts with runtimeVersion policy
+- [x] Add updates config block to app.config.ts (url, enabled, checkOnLaunch)
+- [x] Add production channel to production build profile in eas.json
+- [x] Add preview channel to preview build profile in eas.json
+- [x] Add simulator build profile to eas.json for iOS simulator testing
+- [x] Add credentialsSource: "remote" to all build profiles
+- [x] Add credentialsSource: "remote" to all profiles (EAS manages signing automatically)
+- [x] OTA updates configured (expo-updates checks on app load automatically)
+- [x] Verify all tests pass after expo-updates install (60 passed)

@@ -47,6 +47,16 @@ const config: ExpoConfig = {
   scheme: env.scheme,
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
+  // OTA updates via EAS Update
+  updates: {
+    url: `https://u.expo.dev/369cf431-4f4b-4518-ac98-dfa01d9b90a6`,
+    enabled: true,
+    checkAutomatically: "ON_LOAD",
+    fallbackToCacheTimeout: 0,
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
@@ -109,6 +119,7 @@ const config: ExpoConfig = {
     "expo-router",
     "expo-asset",
     "expo-font",
+    "expo-updates",
     [
       "expo-camera",
       {

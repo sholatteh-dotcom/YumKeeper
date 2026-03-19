@@ -8,35 +8,58 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "channel": "development",
       "env": {
         "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
       },
       "ios": {
-        "simulator": false
+        "simulator": false,
+        "credentialsSource": "remote"
+      },
+      "android": {
+        "buildType": "apk",
+        "credentialsSource": "remote"
+      }
+    },
+    "simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development",
+      "env": {
+        "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "preview": {
       "distribution": "internal",
+      "channel": "preview",
       "env": {
         "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
       },
       "ios": {
-        "simulator": false
+        "simulator": false,
+        "credentialsSource": "remote"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "credentialsSource": "remote"
       }
     },
     "production": {
       "autoIncrement": true,
+      "channel": "production",
       "env": {
         "EAS_BUILD_NO_EXPO_GO_WARNING": "true"
       },
       "ios": {
-        "image": "latest"
+        "image": "latest",
+        "credentialsSource": "remote"
       },
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "credentialsSource": "remote"
       }
     }
   }
