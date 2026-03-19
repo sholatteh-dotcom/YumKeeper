@@ -162,3 +162,7 @@
 
 ## EAS Build Fix: Remove empty submit fields
 - [x] Remove empty submit.production section from eas.json (causes validation errors)
+
+## EAS Project ID Configuration
+- [x] Get EAS projectId from user (via eas init or Expo dashboard)
+- [x] Add extra.eas.projectId to app.config.ts (369cf431-4f4b-4518-ac98-dfa01d9b90a6)
