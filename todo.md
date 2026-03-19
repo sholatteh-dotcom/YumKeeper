@@ -159,3 +159,6 @@
 - [x] Set ios.deploymentTarget to "16.0" via expo-build-properties plugin in app.config.ts
 - [x] Add ios.entitlements with aps-environment for push notifications
 - [x] Add extra.eas.projectId placeholder to app.config.ts (set during eas init)
+
+## EAS Build Fix: Remove empty submit fields
+- [x] Remove empty submit.production section from eas.json (causes validation errors)
