@@ -50,9 +50,26 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
-    "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+    infoPlist: {
+      // Required for App Store submission — declare no encryption
+      ITSAppUsesNonExemptEncryption: false,
+      // Camera permission (barcode scanner)
+      NSCameraUsageDescription:
+        "YumKeeper uses your camera to scan product barcodes and auto-fill food details.",
+      // Microphone permission (expo-audio)
+      NSMicrophoneUsageDescription:
+        "YumKeeper may access your microphone for audio features.",
+      // Photo library permissions
+      NSPhotoLibraryUsageDescription:
+        "YumKeeper accesses your photo library so you can add photos of your food items.",
+      NSPhotoLibraryAddUsageDescription:
+        "YumKeeper saves food item photos to your photo library.",
+      // Notifications permission
+      NSUserNotificationUsageDescription:
+        "YumKeeper sends you alerts when food items are about to expire.",
+      // Background modes for notifications
+      UIBackgroundModes: ["fetch", "remote-notification"],
+    },
   },
   android: {
     adaptiveIcon: {
@@ -86,6 +103,8 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    "expo-asset",
+    "expo-font",
     [
       "expo-camera",
       {

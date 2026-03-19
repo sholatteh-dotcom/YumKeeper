@@ -143,3 +143,11 @@
 - [x] Banner shows items used vs limit (e.g. "7/10 items used")
 - [x] Banner has "Upgrade to Fresh" CTA that opens Pricing screen
 - [x] Banner disappears for paid users
+
+## Apple App Store Build Fixes
+- [x] Install missing peer dependency: expo-asset (required by expo-audio)
+- [x] Update all outdated Expo SDK packages to match SDK 54 versions
+- [x] Fix @react-navigation/bottom-tabs minor version mismatch (added to expo.install.exclude - versions are newer/compatible)
+- [x] Verify app.config.ts iOS permissions are complete (camera, notifications, microphone)
+- [x] Add NSPhotoLibraryUsageDescription and NSPhotoLibraryAddUsageDescription to iOS infoPlist
+- [x] Verify all tests pass after package updates
