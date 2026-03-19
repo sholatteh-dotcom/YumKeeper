@@ -182,3 +182,14 @@
 ## EAS Slug & Warning Fixes
 - [x] Update appSlug in app.config.ts from "food-preservation-app" to "yumkeeper-" to match EAS project
 - [x] Add EAS_BUILD_NO_EXPO_GO_WARNING=true to all build profiles and base profile in eas.json
+
+## EAS Credentials Fix
+- [x] Guide user to run eas credentials interactively to generate Apple Distribution Certificate
+- [x] Update eas.json to handle non-interactive credential builds correctly
+
+## Android Build Configuration
+- [x] Audit eas.json Android build profiles (APK for preview, AAB for production)
+- [x] Verify android package name, adaptive icon, and permissions in app.config.ts
+- [x] Ensure expo-doctor passes all Android-related checks (17/17 passed)
+- [x] Verify no iOS-only native modules are blocking Android build (expo-symbols uses .ios.tsx platform file, safe)
+- [x] Confirm Android build profile uses credentialsSource: remote for keystore auto-generation
