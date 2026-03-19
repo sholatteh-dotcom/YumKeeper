@@ -178,3 +178,7 @@
 - [x] Add credentialsSource: "remote" to all profiles (EAS manages signing automatically)
 - [x] OTA updates configured (expo-updates checks on app load automatically)
 - [x] Verify all tests pass after expo-updates install (60 passed)
+
+## EAS Slug & Warning Fixes
+- [x] Update appSlug in app.config.ts from "food-preservation-app" to "yumkeeper-" to match EAS project
+- [x] Add EAS_BUILD_NO_EXPO_GO_WARNING=true to all build profiles and base profile in eas.json
