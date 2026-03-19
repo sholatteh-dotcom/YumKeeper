@@ -193,3 +193,11 @@
 - [x] Ensure expo-doctor passes all Android-related checks (17/17 passed)
 - [x] Verify no iOS-only native modules are blocking Android build (expo-symbols uses .ios.tsx platform file, safe)
 - [x] Confirm Android build profile uses credentialsSource: remote for keystore auto-generation
+
+## In-App Review Prompt (expo-store-review)
+- [x] Install expo-store-review package
+- [x] Create review trigger utility (tracks item count milestone in AsyncStorage)
+- [x] Trigger review prompt after user adds their 5th food item
+- [x] Ensure review prompt only fires once (never repeat)
+- [x] Add Platform guard (iOS/Android only, skip on web)
+- [x] Integrate into add-item save flow

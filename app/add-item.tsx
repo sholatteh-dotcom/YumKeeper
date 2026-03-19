@@ -12,6 +12,7 @@ import { useSubscription } from '@/lib/subscription-context';
 import {
   FoodItem, StorageLocation, STORAGE_LOCATIONS, UNITS, FOOD_SUGGESTIONS, getFoodEmoji
 } from '@/lib/food-data';
+import { maybeRequestReview } from '@/lib/review-trigger';
 
 function addDays(days: number): string {
   const d = new Date();
@@ -111,6 +112,8 @@ export default function AddItemScreen() {
 
     await addItem(newItem);
     if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    // Trigger in-app review prompt at the 5-item milestone (once only)
+    maybeRequestReview();
     router.back();
   };
 
