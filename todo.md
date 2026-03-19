@@ -151,3 +151,11 @@
 - [x] Verify app.config.ts iOS permissions are complete (camera, notifications, microphone)
 - [x] Add NSPhotoLibraryUsageDescription and NSPhotoLibraryAddUsageDescription to iOS infoPlist
 - [x] Verify all tests pass after package updates
+
+## EAS Build Configuration Fixes
+- [x] Create eas.json with build profiles (development, preview, production)
+- [x] Set cli.appVersionSource to "remote" in eas.json
+- [x] Add EAS_BUILD_NO_EXPO_GO_WARNING=true to suppress Expo Go warning
+- [x] Set ios.deploymentTarget to "16.0" via expo-build-properties plugin in app.config.ts
+- [x] Add ios.entitlements with aps-environment for push notifications
+- [x] Add extra.eas.projectId placeholder to app.config.ts (set during eas init)

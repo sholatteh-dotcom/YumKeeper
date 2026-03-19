@@ -50,6 +50,10 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
+    entitlements: {
+      // Required for push notifications via expo-notifications
+      "aps-environment": "production",
+    },
     infoPlist: {
       // Required for App Store submission — declare no encryption
       ITSAppUsesNonExemptEncryption: false,
@@ -139,6 +143,9 @@ const config: ExpoConfig = {
     [
       "expo-build-properties",
       {
+        ios: {
+          deploymentTarget: "16.0",
+        },
         android: {
           buildArchs: ["armeabi-v7a", "arm64-v8a"],
           minSdkVersion: 24,
