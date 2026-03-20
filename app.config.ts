@@ -128,6 +128,16 @@ const config: ExpoConfig = {
     "expo-font",
     "expo-updates",
     [
+      "expo-notifications",
+      {
+        // Default channel used by FCM remote notifications on Android 8+
+        // Local notification channels are registered at runtime in lib/notifications.ts
+        defaultChannel: "expiry-alerts",
+        icon: "./assets/images/android-icon-foreground.png",
+        color: "#2D8A4E",
+      },
+    ],
+    [
       "expo-camera",
       {
         "cameraPermission": "Allow YumKeeper to access your camera to scan product barcodes."

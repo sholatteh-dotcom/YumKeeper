@@ -1,0 +1,317 @@
+import React, { useRef, useState } from "react";
+import {
+  Dimensions,
+  FlatList,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ViewToken,
+} from "react-native";
+import { router } from "expo-router";
+import * as Haptics from "expo-haptics";
+import { markOnboardingComplete } from "@/lib/onboarding";
+import { useColors } from "@/hooks/use-colors";
+
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+// ─── Slide data ───────────────────────────────────────────────────────────────
+const SLIDES = [
+  {
+    id: "welcome",
+    emoji: "🫙",
+    title: "Welcome to YumKeeper",
+    subtitle: "Stop wasting food. Save money.\nKeep your pantry perfectly fresh.",
+    bullets: [
+      { icon: "📦", text: "Track everything in your fridge, freezer & pantry" },
+      { icon: "⏰", text: "Get alerts before food expires" },
+      { icon: "💡", text: "Discover preservation tips from the pros" },
+    ],
+  },
+  {
+    id: "features",
+    emoji: "✨",
+    title: "Everything You Need",
+    subtitle: "Powerful tools that make food management effortless.",
+    bullets: [
+      { icon: "📷", text: "Scan barcodes to add items in seconds" },
+      { icon: "🛒", text: "Auto-generate shopping lists when you run low" },
+      { icon: "🍳", text: "Get recipe ideas for items about to expire" },
+    ],
+  },
+  {
+    id: "trial",
+    emoji: "🎉",
+    title: "Start Free — Upgrade Anytime",
+    subtitle: "Try YumKeeper Fresh free for 7 days.\nNo credit card required to get started.",
+    bullets: [
+      { icon: "✅", text: "Free plan: track up to 10 items, 3 tips" },
+      { icon: "🚀", text: "Fresh plan: unlimited items, barcode & shopping list" },
+      { icon: "👨‍👩‍👧", text: "Family plan: share with up to 6 members" },
+    ],
+  },
+] as const;
+
+type Slide = (typeof SLIDES)[number];
+
+// ─── Individual slide ─────────────────────────────────────────────────────────
+function OnboardingSlide({ slide, colors }: { slide: Slide; colors: ReturnType<typeof useColors> }) {
+  return (
+    <View style={[styles.slide, { width: SCREEN_WIDTH }]}>
+      <View style={styles.emojiContainer}>
+        <Text style={styles.emoji}>{slide.emoji}</Text>
+      </View>
+
+      <Text style={[styles.title, { color: colors.foreground }]}>{slide.title}</Text>
+      <Text style={[styles.subtitle, { color: colors.muted }]}>{slide.subtitle}</Text>
+
+      <View style={styles.bulletsContainer}>
+        {slide.bullets.map((bullet, index) => (
+          <View key={index} style={[styles.bulletRow, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <Text style={styles.bulletIcon}>{bullet.icon}</Text>
+            <Text style={[styles.bulletText, { color: colors.foreground }]}>{bullet.text}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// ─── Dot indicator ────────────────────────────────────────────────────────────
+function DotIndicator({ total, current, colors }: { total: number; current: number; colors: ReturnType<typeof useColors> }) {
+  return (
+    <View style={styles.dotsRow}>
+      {Array.from({ length: total }).map((_, i) => (
+        <View
+          key={i}
+          style={[
+            styles.dot,
+            {
+              backgroundColor: i === current ? colors.primary : colors.border,
+              width: i === current ? 20 : 8,
+            },
+          ]}
+        />
+      ))}
+    </View>
+  );
+}
+
+// ─── Main screen ──────────────────────────────────────────────────────────────
+export default function OnboardingScreen() {
+  const colors = useColors();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef<FlatList<Slide>>(null);
+
+  const isLast = currentIndex === SLIDES.length - 1;
+
+  const handleViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+        setCurrentIndex(viewableItems[0].index);
+      }
+    }
+  ).current;
+
+  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+  const goNext = () => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    if (isLast) {
+      handleFinish();
+    } else {
+      flatListRef.current?.scrollToIndex({ index: currentIndex + 1, animated: true });
+    }
+  };
+
+  const handleFinish = async () => {
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    await markOnboardingComplete();
+    router.replace("/(tabs)");
+  };
+
+  const handleSkip = async () => {
+    await markOnboardingComplete();
+    router.replace("/(tabs)");
+  };
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Skip button */}
+      {!isLast && (
+        <Pressable
+          onPress={handleSkip}
+          style={({ pressed }) => [styles.skipButton, pressed && { opacity: 0.6 }]}
+        >
+          <Text style={[styles.skipText, { color: colors.muted }]}>Skip</Text>
+        </Pressable>
+      )}
+
+      {/* Slides */}
+      <FlatList
+        ref={flatListRef}
+        data={SLIDES as unknown as Slide[]}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => <OnboardingSlide slide={item} colors={colors} />}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onViewableItemsChanged={handleViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+        scrollEventThrottle={16}
+        style={styles.flatList}
+        contentContainerStyle={styles.flatListContent}
+      />
+
+      {/* Bottom controls */}
+      <View style={styles.bottomArea}>
+        <DotIndicator total={SLIDES.length} current={currentIndex} colors={colors} />
+
+        <Pressable
+          onPress={goNext}
+          style={({ pressed }) => [
+            styles.ctaButton,
+            { backgroundColor: colors.primary },
+            pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
+          ]}
+        >
+          <Text style={styles.ctaText}>
+            {isLast ? "Start Free Trial" : "Next"}
+          </Text>
+        </Pressable>
+
+        {isLast && (
+          <Pressable
+            onPress={handleSkip}
+            style={({ pressed }) => [styles.secondaryButton, pressed && { opacity: 0.6 }]}
+          >
+            <Text style={[styles.secondaryText, { color: colors.muted }]}>
+              Maybe later — use free plan
+            </Text>
+          </Pressable>
+        )}
+      </View>
+    </View>
+  );
+}
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  skipButton: {
+    position: "absolute",
+    top: 56,
+    right: 24,
+    zIndex: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  skipText: {
+    fontSize: 15,
+    fontWeight: "500",
+  },
+  flatList: {
+    flex: 1,
+  },
+  flatListContent: {
+    // No extra padding — each slide is exactly SCREEN_WIDTH
+  },
+  slide: {
+    flex: 1,
+    paddingHorizontal: 28,
+    paddingTop: 80,
+    paddingBottom: 24,
+    alignItems: "center",
+  },
+  emojiContainer: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: "rgba(45, 138, 78, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 28,
+  },
+  emoji: {
+    fontSize: 48,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 12,
+    lineHeight: 34,
+  },
+  subtitle: {
+    fontSize: 15,
+    textAlign: "center",
+    lineHeight: 22,
+    marginBottom: 32,
+  },
+  bulletsContainer: {
+    width: "100%",
+    gap: 10,
+  },
+  bulletRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    gap: 14,
+  },
+  bulletIcon: {
+    fontSize: 22,
+  },
+  bulletText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: "500",
+  },
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    marginBottom: 20,
+  },
+  dot: {
+    height: 8,
+    borderRadius: 4,
+  },
+  bottomArea: {
+    paddingHorizontal: 28,
+    paddingBottom: 48,
+    paddingTop: 8,
+    alignItems: "center",
+  },
+  ctaButton: {
+    width: "100%",
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  ctaText: {
+    color: "#FFFFFF",
+    fontSize: 17,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+  },
+  secondaryButton: {
+    paddingVertical: 8,
+  },
+  secondaryText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+});

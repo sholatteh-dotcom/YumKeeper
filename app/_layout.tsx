@@ -1,6 +1,6 @@
 import "@/global.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -21,6 +21,8 @@ import { FoodProvider } from "@/lib/food-context";
 import { ShoppingProvider } from "@/lib/shopping-context";
 import { SubscriptionProvider } from "@/lib/subscription-context";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
+import { shouldShowOnboarding } from "@/lib/onboarding";
+import { registerNotificationChannels } from "@/lib/notifications";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -39,6 +41,20 @@ export default function RootLayout() {
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
     initManusRuntime();
+  }, []);
+
+  // Register Android notification channels once at startup
+  useEffect(() => {
+    registerNotificationChannels().catch(() => {});
+  }, []);
+
+  // Redirect to onboarding on first launch
+  useEffect(() => {
+    shouldShowOnboarding().then((show) => {
+      if (show) {
+        router.replace("/onboarding");
+      }
+    });
   }, []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
@@ -101,6 +117,7 @@ export default function RootLayout() {
                   <Stack.Screen name="meal-detail" />
                   <Stack.Screen name="pricing" options={{ presentation: 'modal' }} />
                   <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+                  <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
                 </Stack>
                 <StatusBar style="auto" />
               </FoodProvider>

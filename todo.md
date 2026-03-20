@@ -201,3 +201,14 @@
 - [x] Ensure review prompt only fires once (never repeat)
 - [x] Add Platform guard (iOS/Android only, skip on web)
 - [x] Integrate into add-item save flow
+
+## Android Notification Channels
+- [x] Add named notification channels to app.config.ts (Expiry Alerts, Weekly Digest)
+- [x] Update notification service to use named channel IDs
+
+## Onboarding Flow (First-Launch)
+- [x] Create onboarding screen 1: Welcome / hero with app value prop
+- [x] Create onboarding screen 2: Key features highlight (inventory, tips, barcode)
+- [x] Create onboarding screen 3: Free trial CTA with "Start Free Trial" button
+- [x] First-launch detection via AsyncStorage
+- [x] Wire onboarding into root layout (_layout.tsx)
