@@ -68,6 +68,10 @@ async function startServer() {
   // ─── Public legal pages ────────────────────────────────────────────────────
   // Served as plain HTML — no auth required.
   // Suitable for Google Play Store / Apple App Store privacy policy links.
+
+  // Serve shared legal UI assets (CSS + JS for cookie banner & language switcher)
+  app.use("/legal-assets", express.static(path.join(__dirname, "../../server/legal-assets")));
+
   app.get("/privacy-policy", (_req, res) => {
     res.sendFile(path.join(__dirname, "../../server/privacy-policy.html"));
   });

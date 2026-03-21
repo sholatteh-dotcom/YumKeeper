@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import {
   Dimensions,
   FlatList,
+  Linking,
   Platform,
   Pressable,
   StyleSheet,
@@ -11,10 +12,26 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
-import { markOnboardingComplete } from "@/lib/onboarding";
+import * as WebBrowser from "expo-web-browser";
+import { markOnboardingComplete, recordLegalConsent } from "@/lib/onboarding";
 import { useColors } from "@/hooks/use-colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+const LEGAL_BASE_URL = "https://freshkeep-ctbgrbwn.manus.space";
+
+async function openLegalPage(path: string): Promise<void> {
+  const url = `${LEGAL_BASE_URL}${path}`;
+  if (Platform.OS === "web") {
+    await Linking.openURL(url);
+  } else {
+    await WebBrowser.openBrowserAsync(url, {
+      presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+      toolbarColor: "#2D8A4E",
+      controlsColor: "#FFFFFF",
+    });
+  }
+}
 
 // ─── Slide data ───────────────────────────────────────────────────────────────
 const SLIDES = [
@@ -78,6 +95,61 @@ function OnboardingSlide({ slide, colors }: { slide: Slide; colors: ReturnType<t
   );
 }
 
+// ─── Consent checkbox ─────────────────────────────────────────────────────────
+function ConsentCheckbox({
+  checked,
+  onToggle,
+  colors,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  colors: ReturnType<typeof useColors>;
+}) {
+  return (
+    <Pressable
+      onPress={onToggle}
+      style={[
+        styles.consentRow,
+        { borderColor: checked ? colors.primary : colors.border, backgroundColor: colors.surface },
+      ]}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      accessibilityLabel="I agree to the Terms of Service and Privacy Policy"
+    >
+      {/* Checkbox box */}
+      <View
+        style={[
+          styles.checkbox,
+          {
+            borderColor: checked ? colors.primary : colors.border,
+            backgroundColor: checked ? colors.primary : "transparent",
+          },
+        ]}
+      >
+        {checked && <Text style={styles.checkmark}>✓</Text>}
+      </View>
+
+      {/* Label with tappable links */}
+      <Text style={[styles.consentText, { color: colors.foreground }]}>
+        {"I agree to the "}
+        <Text
+          style={[styles.consentLink, { color: colors.primary }]}
+          onPress={() => openLegalPage("/terms")}
+        >
+          Terms of Service
+        </Text>
+        {" and "}
+        <Text
+          style={[styles.consentLink, { color: colors.primary }]}
+          onPress={() => openLegalPage("/privacy-policy")}
+        >
+          Privacy Policy
+        </Text>
+      </Text>
+    </Pressable>
+  );
+}
+
 // ─── Dot indicator ────────────────────────────────────────────────────────────
 function DotIndicator({ total, current, colors }: { total: number; current: number; colors: ReturnType<typeof useColors> }) {
   return (
@@ -102,6 +174,7 @@ function DotIndicator({ total, current, colors }: { total: number; current: numb
 export default function OnboardingScreen() {
   const colors = useColors();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [consentChecked, setConsentChecked] = useState(false);
   const flatListRef = useRef<FlatList<Slide>>(null);
 
   const isLast = currentIndex === SLIDES.length - 1;
@@ -131,6 +204,8 @@ export default function OnboardingScreen() {
     if (Platform.OS !== "web") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
+    // Record consent timestamp before completing onboarding
+    await recordLegalConsent();
     await markOnboardingComplete();
     router.replace("/(tabs)");
   };
@@ -139,6 +214,16 @@ export default function OnboardingScreen() {
     await markOnboardingComplete();
     router.replace("/(tabs)");
   };
+
+  const handleToggleConsent = () => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setConsentChecked((prev) => !prev);
+  };
+
+  // CTA is disabled on last slide until consent is checked
+  const ctaDisabled = isLast && !consentChecked;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -172,15 +257,29 @@ export default function OnboardingScreen() {
       <View style={styles.bottomArea}>
         <DotIndicator total={SLIDES.length} current={currentIndex} colors={colors} />
 
+        {/* Consent checkbox — only visible on last slide */}
+        {isLast && (
+          <ConsentCheckbox
+            checked={consentChecked}
+            onToggle={handleToggleConsent}
+            colors={colors}
+          />
+        )}
+
         <Pressable
-          onPress={goNext}
+          onPress={ctaDisabled ? undefined : goNext}
           style={({ pressed }) => [
             styles.ctaButton,
-            { backgroundColor: colors.primary },
-            pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
+            {
+              backgroundColor: ctaDisabled
+                ? colors.border
+                : colors.primary,
+            },
+            !ctaDisabled && pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
           ]}
+          accessibilityState={{ disabled: ctaDisabled }}
         >
-          <Text style={styles.ctaText}>
+          <Text style={[styles.ctaText, ctaDisabled && { color: colors.muted }]}>
             {isLast ? "Start Free Trial" : "Next"}
           </Text>
         </Pressable>
@@ -277,6 +376,44 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: "500",
   },
+  // ─── Consent ───
+  consentRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    width: "100%",
+    borderRadius: 14,
+    borderWidth: 1.5,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 16,
+    gap: 12,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+    flexShrink: 0,
+  },
+  checkmark: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "800",
+    lineHeight: 16,
+  },
+  consentText: {
+    flex: 1,
+    fontSize: 13,
+    lineHeight: 20,
+  },
+  consentLink: {
+    fontWeight: "700",
+    textDecorationLine: "underline",
+  },
+  // ─── Dots ───
   dotsRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -288,6 +425,7 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
   },
+  // ─── Bottom ───
   bottomArea: {
     paddingHorizontal: 28,
     paddingBottom: 48,

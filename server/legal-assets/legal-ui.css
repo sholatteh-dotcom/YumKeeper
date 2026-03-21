@@ -1,0 +1,124 @@
+/* ─── Cookie Consent Banner ─────────────────────────────────────────────────── */
+
+#cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #1A2E1C;
+  color: #ECEDEE;
+  padding: 16px 24px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+#cookie-banner.cb-hide {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.cb-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cb-text {
+  flex: 1;
+  min-width: 240px;
+}
+
+.cb-text strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.cb-text p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #9BA1A6;
+  margin: 0;
+}
+
+.cb-text a {
+  color: #4ADE80;
+  text-decoration: underline;
+}
+
+.cb-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cb-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.cb-btn:hover { opacity: 0.85; }
+
+.cb-btn-primary {
+  background: #2D8A4E;
+  color: #fff;
+}
+
+.cb-btn-secondary {
+  background: rgba(255,255,255,0.1);
+  color: #ECEDEE;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+@media (max-width: 600px) {
+  .cb-inner { flex-direction: column; gap: 12px; }
+  .cb-actions { width: 100%; }
+  .cb-btn { flex: 1; text-align: center; }
+}
+
+
+/* ─── Language Switcher ─────────────────────────────────────────────────────── */
+
+#lang-switcher {
+  background: #fff;
+  border-bottom: 1px solid #D8E8DA;
+  padding: 10px 24px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lang-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid #D8E8DA;
+  background: transparent;
+  color: #6B7C6D;
+  transition: all 0.15s;
+}
+
+.lang-btn:hover {
+  border-color: #2D8A4E;
+  color: #2D8A4E;
+}
+
+.lang-btn.lang-active {
+  background: #2D8A4E;
+  border-color: #2D8A4E;
+  color: #fff;
+}

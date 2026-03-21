@@ -220,3 +220,14 @@
 - [x] Create /terms route on Express server with full ToS HTML page
 - [x] Add /terms-of-service redirect alias
 - [x] Link both /privacy-policy and /terms from the Settings screen
+
+## Legal Compliance Follow-up (Round 2)
+- [x] Add "I agree to ToS and Privacy Policy" consent checkbox to onboarding slide 3
+- [x] Make ToS and Privacy Policy links tappable inside the onboarding consent checkbox text
+- [x] Gate "Start Free Trial" button behind consent checkbox (disabled until checked)
+- [x] Store consent timestamp in AsyncStorage for audit trail
+- [x] Add GDPR cookie/tracking consent banner to privacy-policy.html and terms.html
+- [x] Banner gates analytics behind explicit opt-in (localStorage-based)
+- [x] Add EN/FR/DE/ES language switcher to privacy-policy.html
+- [x] Add EN/FR/DE/ES language switcher to terms.html
+- [x] Translate key sections (headings + summaries) into FR, DE, ES
