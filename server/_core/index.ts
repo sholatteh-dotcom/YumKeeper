@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
@@ -62,6 +63,18 @@ async function startServer() {
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true, timestamp: Date.now() });
+  });
+
+  // ─── Public legal pages ────────────────────────────────────────────────────
+  // Served as plain HTML — no auth required.
+  // Suitable for Google Play Store / Apple App Store privacy policy links.
+  app.get("/privacy-policy", (_req, res) => {
+    res.sendFile(path.join(__dirname, "../../server/privacy-policy.html"));
+  });
+
+  // Convenience redirect: /privacy → /privacy-policy
+  app.get("/privacy", (_req, res) => {
+    res.redirect(301, "/privacy-policy");
   });
 
   app.use(
