@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import { protectedProcedure, adminProcedure, router } from "./_core/trpc";
-import { upsertConsentRecord, getLatestConsentRecord, getConsentStatusSummary, createDeletionRequest, getDeletionRequest } from "./db";
+import { upsertConsentRecord, getLatestConsentRecord, getConsentStatusSummary, createDeletionRequest, getDeletionRequest, updateDeletionRequestStatus, getAllDeletionRequests, purgeExpiredDeletionRequests } from "./db";
+import { notifyOwner } from "./_core/notification";
 
 /**
  * Current policy version — bump this string whenever the ToS or Privacy Policy
@@ -41,6 +42,13 @@ export const legalRouter = router({
     .input(z.object({ platform: z.string().optional() }))
     .mutation(async ({ ctx, input }) => {
       const requestId = await createDeletionRequest(ctx.user.id, input.platform);
+
+      // Notify the project owner (admin alert) — non-blocking, fire and forget
+      notifyOwner({
+        title: "New GDPR Deletion Request",
+        content: `User ${ctx.user.name ?? ctx.user.email ?? `#${ctx.user.id}`} (ID: ${ctx.user.id}) has submitted a GDPR Article 17 erasure request (Request ID: ${requestId}). Platform: ${input.platform ?? "unknown"}. Please process within 30 days.`,
+      }).catch((err) => console.warn("[Legal] Failed to notify owner of deletion request:", err));
+
       return {
         success: true,
         requestId,
@@ -73,6 +81,52 @@ export const legalRouter = router({
       currentVersion: CURRENT_POLICY_VERSION,
       ...summary,
     };
+  }),
+
+  /**
+   * Admin-only: returns all deletion requests with user info for the admin queue.
+   */
+  adminDeletionQueue: adminProcedure.query(async () => {
+    const requests = await getAllDeletionRequests();
+    return { requests };
+  }),
+
+  /**
+   * Admin-only: updates the status of a deletion request.
+   * Used to mark requests as "processing" or "completed".
+   */
+  adminUpdateDeletionStatus: adminProcedure
+    .input(
+      z.object({
+        requestId: z.number().int().positive(),
+        status: z.enum(["pending", "processing", "completed", "cancelled"]),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await updateDeletionRequestStatus(input.requestId, input.status);
+      // Notify owner when a request is completed
+      if (input.status === "completed") {
+        notifyOwner({
+          title: "GDPR Deletion Request Completed",
+          content: `Deletion request #${input.requestId} has been marked as completed. The user's data has been erased.`,
+        }).catch(() => {});
+      }
+      return { success: true, requestId: input.requestId, status: input.status } as const;
+    }),
+
+  /**
+   * Admin-only: manually triggers the 30-day purge job.
+   * Processes all pending/processing requests older than 30 days.
+   */
+  adminRunPurge: adminProcedure.mutation(async () => {
+    const count = await purgeExpiredDeletionRequests();
+    if (count > 0) {
+      notifyOwner({
+        title: "GDPR Purge Job Completed",
+        content: `Automated purge processed ${count} expired deletion request(s). User data has been erased from the database.`,
+      }).catch(() => {});
+    }
+    return { success: true, purgedCount: count } as const;
   }),
 
   /**

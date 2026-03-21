@@ -3,6 +3,13 @@ import express from "express";
 import { createServer } from "http";
 import net from "net";
 import path from "path";
+import { fileURLToPath } from "url";
+import { purgeExpiredDeletionRequests } from "../db";
+import { notifyOwner } from "./notification";
+
+// ESM-safe __dirname equivalent (works in both dev/tsx and production esbuild output)
+const __filename = typeof __dirname !== "undefined" ? "" : fileURLToPath(import.meta.url);
+const __dirnameESM = typeof __dirname !== "undefined" ? __dirname : path.dirname(__filename);
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
@@ -70,10 +77,10 @@ async function startServer() {
   // Suitable for Google Play Store / Apple App Store privacy policy links.
 
   // Serve shared legal UI assets (CSS + JS for cookie banner & language switcher)
-  app.use("/legal-assets", express.static(path.join(__dirname, "../../server/legal-assets")));
+  app.use("/legal-assets", express.static(path.join(__dirnameESM, "../../server/legal-assets")));
 
   app.get("/privacy-policy", (_req, res) => {
-    res.sendFile(path.join(__dirname, "../../server/privacy-policy.html"));
+    res.sendFile(path.join(__dirnameESM, "../../server/privacy-policy.html"));
   });
 
   // Convenience redirect: /privacy → /privacy-policy
@@ -82,7 +89,7 @@ async function startServer() {
   });
 
   app.get("/terms", (_req, res) => {
-    res.sendFile(path.join(__dirname, "../../server/terms.html"));
+    res.sendFile(path.join(__dirnameESM, "../../server/terms.html"));
   });
 
   // Convenience redirect: /terms-of-service → /terms
@@ -111,3 +118,44 @@ async function startServer() {
 }
 
 startServer().catch(console.error);
+
+// ─── Daily GDPR Purge Job ──────────────────────────────────────────────────
+// Runs once per day at 02:00 UTC. Processes all deletion requests older than
+// 30 days that are still pending or processing, deletes server-side user data,
+// and marks requests as completed. Non-blocking — errors are logged, not thrown.
+function scheduleDailyPurge() {
+  const runPurge = async () => {
+    try {
+      const count = await purgeExpiredDeletionRequests();
+      if (count > 0) {
+        console.log(`[Purge] Daily job completed: processed ${count} expired deletion request(s)`);
+        notifyOwner({
+          title: "Daily GDPR Purge Completed",
+          content: `The automated daily purge job processed ${count} expired deletion request(s). User data has been erased from the database.`,
+        }).catch(() => {});
+      } else {
+        console.log("[Purge] Daily job: no expired requests found");
+      }
+    } catch (err) {
+      console.error("[Purge] Daily job failed:", err);
+    }
+  };
+
+  // Calculate ms until next 02:00 UTC
+  const scheduleNext = () => {
+    const now = new Date();
+    const next = new Date();
+    next.setUTCHours(2, 0, 0, 0);
+    if (next <= now) next.setUTCDate(next.getUTCDate() + 1); // tomorrow
+    const delay = next.getTime() - now.getTime();
+    console.log(`[Purge] Next daily job scheduled in ${Math.round(delay / 1000 / 60)} minutes (at 02:00 UTC)`);
+    setTimeout(async () => {
+      await runPurge();
+      scheduleNext(); // reschedule for the following day
+    }, delay);
+  };
+
+  scheduleNext();
+}
+
+scheduleDailyPurge();

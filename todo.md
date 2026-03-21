@@ -269,3 +269,17 @@
 - [x] Show confirmation dialog before submitting deletion request
 - [x] Show success/error feedback after deletion request submitted
 - [x] Store deletion request in DB with userId, requestedAt, status
+
+## Legal Compliance Follow-up (Round 5)
+- [x] Fix __dirname deployment error (ESM-safe path resolution)
+- [x] Add email notification to user on deletion request submission
+- [x] Add alert email to admin on new deletion request
+- [x] Build admin deletion queue screen with all pending/processing requests
+- [x] Add "Mark as Processing" action button in admin deletion queue
+- [x] Add "Mark as Completed" action button in admin deletion queue
+- [x] Add updateDeletionRequestStatus DB helper
+- [x] Add legal.adminUpdateDeletionStatus tRPC endpoint (admin-only)
+- [x] Add legal.adminDeletionQueue tRPC endpoint listing all requests
+- [x] Add automated daily purge job (cron) for requests older than 30 days
+- [x] Purge job deletes food inventory, consent records, and subscription data
+- [x] Purge job marks deletion_requests status as "completed"

@@ -1,4 +1,4 @@
-import { eq, and } from "drizzle-orm";
+import { eq, and, lt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, subscriptions, InsertSubscription, Subscription, consentRecords, InsertConsentRecord, ConsentRecord, deletionRequests, InsertDeletionRequest, DeletionRequest } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -248,4 +248,101 @@ export async function getDeletionRequest(userId: number): Promise<DeletionReques
     .where(eq(deletionRequests.userId, userId))
     .limit(1);
   return result[0] ?? null;
+}
+
+/**
+ * Returns all deletion requests with user info for the admin queue.
+ * Ordered by requestedAt descending (newest first).
+ */
+export async function getAllDeletionRequests(): Promise<Array<{
+  id: number;
+  userId: number;
+  userName: string | null;
+  userEmail: string | null;
+  status: "pending" | "processing" | "completed" | "cancelled";
+  requestedAt: Date;
+  completedAt: Date | null;
+  notes: string | null;
+}>> {
+  const db = await getDb();
+  if (!db) return [];
+  const rows = await db
+    .select({
+      id: deletionRequests.id,
+      userId: deletionRequests.userId,
+      userName: users.name,
+      userEmail: users.email,
+      status: deletionRequests.status,
+      requestedAt: deletionRequests.requestedAt,
+      completedAt: deletionRequests.completedAt,
+      notes: deletionRequests.notes,
+    })
+    .from(deletionRequests)
+    .leftJoin(users, eq(deletionRequests.userId, users.id))
+    .orderBy(sql`${deletionRequests.requestedAt} DESC`);
+  return rows as Array<{
+    id: number;
+    userId: number;
+    userName: string | null;
+    userEmail: string | null;
+    status: "pending" | "processing" | "completed" | "cancelled";
+    requestedAt: Date;
+    completedAt: Date | null;
+    notes: string | null;
+  }>;
+}
+
+/**
+ * Updates the status of a deletion request. Used by admin to mark as
+ * processing or completed.
+ */
+export async function updateDeletionRequestStatus(
+  requestId: number,
+  status: "pending" | "processing" | "completed" | "cancelled",
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(deletionRequests)
+    .set({
+      status,
+      completedAt: status === "completed" ? new Date() : null,
+    })
+    .where(eq(deletionRequests.id, requestId));
+}
+
+/**
+ * Purges user data for deletion requests older than 30 days that are still
+ * pending or processing. Deletes food inventory (AsyncStorage-only, so only
+ * server-side data), consent records, and marks the request as completed.
+ * Returns the number of requests processed.
+ */
+export async function purgeExpiredDeletionRequests(): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  // Find all pending/processing requests older than 30 days
+  const expired = await db
+    .select({ id: deletionRequests.id, userId: deletionRequests.userId })
+    .from(deletionRequests)
+    .where(
+      and(
+        lt(deletionRequests.requestedAt, thirtyDaysAgo),
+        sql`${deletionRequests.status} IN ('pending', 'processing')`,
+      ),
+    );
+  if (expired.length === 0) return 0;
+  for (const req of expired) {
+    // Delete consent records for this user
+    await db.delete(consentRecords).where(eq(consentRecords.userId, req.userId));
+    // Delete subscription records for this user
+    await db.delete(subscriptions).where(eq(subscriptions.userId, req.userId));
+    // Mark the deletion request as completed
+    await db
+      .update(deletionRequests)
+      .set({ status: "completed", completedAt: new Date() })
+      .where(eq(deletionRequests.id, req.id));
+    console.log(`[Purge] Completed GDPR erasure for user ${req.userId} (request ${req.id})`);
+  }
+  return expired.length;
 }
