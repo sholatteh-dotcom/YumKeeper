@@ -21,7 +21,8 @@ import { FoodProvider } from "@/lib/food-context";
 import { ShoppingProvider } from "@/lib/shopping-context";
 import { SubscriptionProvider } from "@/lib/subscription-context";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
-import { shouldShowOnboarding } from "@/lib/onboarding";
+import { shouldShowOnboarding, needsReConsent } from "@/lib/onboarding";
+import { ReConsentModal } from "@/components/re-consent-modal";
 import { registerNotificationChannels } from "@/lib/notifications";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -37,6 +38,7 @@ export default function RootLayout() {
 
   const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
   const [frame, setFrame] = useState<Rect>(initialFrame);
+  const [showReConsent, setShowReConsent] = useState(false);
 
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
@@ -48,11 +50,16 @@ export default function RootLayout() {
     registerNotificationChannels().catch(() => {});
   }, []);
 
-  // Redirect to onboarding on first launch
+  // Redirect to onboarding on first launch; check re-consent for returning users
   useEffect(() => {
     shouldShowOnboarding().then((show) => {
       if (show) {
         router.replace("/onboarding");
+      } else {
+        // Returning user — check if policy version has been bumped
+        needsReConsent().then((needs) => {
+          if (needs) setShowReConsent(true);
+        });
       }
     });
   }, []);
@@ -120,6 +127,10 @@ export default function RootLayout() {
                   <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
                 </Stack>
                 <StatusBar style="auto" />
+                <ReConsentModal
+                  visible={showReConsent}
+                  onConsent={() => setShowReConsent(false)}
+                />
               </FoodProvider>
             </ShoppingProvider>
           </SubscriptionProvider>

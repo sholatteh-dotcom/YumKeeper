@@ -15,6 +15,13 @@
       "when": 1773875274312,
       "tag": "0001_grey_menace",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1774100209903,
+      "tag": "0002_curved_thor",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, subscriptions, InsertSubscription, Subscription } from "../drizzle/schema";
+import { InsertUser, users, subscriptions, InsertSubscription, Subscription, consentRecords, InsertConsentRecord, ConsentRecord } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -114,6 +114,41 @@ export async function upsertSubscription(data: InsertSubscription): Promise<void
   } else {
     await db.insert(subscriptions).values(data);
   }
+}
+
+// ─── Consent record helpers ─────────────────────────────────────────────────
+
+/**
+ * Upserts a legal consent record for a user.
+ * If the user has already consented to this policy version, this is a no-op.
+ */
+export async function upsertConsentRecord(data: InsertConsentRecord): Promise<void> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot save consent record: database not available");
+    return;
+  }
+  const existing = await db
+    .select()
+    .from(consentRecords)
+    .where(eq(consentRecords.userId, data.userId))
+    .limit(1);
+  if (existing.length > 0 && existing[0].policyVersion === data.policyVersion) return; // Already recorded for this version
+  await db.insert(consentRecords).values(data);
+}
+
+/**
+ * Returns the most recent consent record for a user, or undefined if none.
+ */
+export async function getLatestConsentRecord(userId: number): Promise<ConsentRecord | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db
+    .select()
+    .from(consentRecords)
+    .where(eq(consentRecords.userId, userId))
+    .limit(1);
+  return result.length > 0 ? result[0] : undefined;
 }
 
 export async function updateSubscriptionByCustomerId(

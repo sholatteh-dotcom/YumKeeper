@@ -231,3 +231,29 @@
 - [x] Add EN/FR/DE/ES language switcher to privacy-policy.html
 - [x] Add EN/FR/DE/ES language switcher to terms.html
 - [x] Translate key sections (headings + summaries) into FR, DE, ES
+
+## Legal Compliance Follow-up (Round 3)
+- [x] Add Dutch (NL) to language switcher on both legal pages
+- [x] Translate all body paragraph text into FR, DE, ES, NL on privacy-policy.html
+- [x] Translate all body paragraph text into FR, DE, ES, NL on terms.html
+- [x] Add consent_records table to database schema
+- [x] Add POST /api/legal/consent server endpoint to store consent records
+- [x] Sync onboarding consent record to server after user logs in
+- [x] Add CURRENT_POLICY_VERSION constant shared between app and server
+- [x] On app launch, check stored consent version vs current version
+- [x] Show re-consent modal if policy version is newer than stored consent
+- [x] Re-consent modal links to updated ToS and Privacy Policy
+- [x] On re-consent, update AsyncStorage and sync to server
+
+## Legal Compliance Follow-up (Round 3)
+- [x] Add Dutch (NL) to language switcher on both legal pages
+- [x] Translate all body paragraph text into FR, DE, ES, NL on privacy-policy.html
+- [x] Translate all body paragraph text into FR, DE, ES, NL on terms.html
+- [x] Add consent_records table to database schema
+- [x] Add POST /api/legal/consent server endpoint to store consent records
+- [x] Sync onboarding consent record to server after user logs in
+- [x] Add CURRENT_POLICY_VERSION constant shared between app and server
+- [x] On app launch, check stored consent version vs current version
+- [x] Show re-consent modal if policy version is newer than stored consent
+- [x] Re-consent modal links to updated ToS and Privacy Policy
+- [x] On re-consent, update AsyncStorage and sync to server

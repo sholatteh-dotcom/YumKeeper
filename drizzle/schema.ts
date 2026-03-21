@@ -38,3 +38,21 @@ export const subscriptions = mysqlTable("subscriptions", {
 
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+/**
+ * Legal consent records table — stores an audit trail of when each user
+ * explicitly agreed to the Terms of Service and Privacy Policy.
+ * One record per user per policy version.
+ */
+export const consentRecords = mysqlTable("consent_records", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  policyVersion: varchar("policyVersion", { length: 16 }).notNull().default("1.0"),
+  consentedAt: timestamp("consentedAt").notNull(),
+  documents: varchar("documents", { length: 255 }).notNull().default("terms-of-service,privacy-policy"),
+  platform: varchar("platform", { length: 16 }), // 'ios' | 'android' | 'web'
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ConsentRecord = typeof consentRecords.$inferSelect;
+export type InsertConsentRecord = typeof consentRecords.$inferInsert;
