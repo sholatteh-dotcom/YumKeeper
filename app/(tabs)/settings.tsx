@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, Switch, Alert
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, Switch, Alert, Linking, Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
 import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
@@ -12,7 +13,21 @@ import { useSubscription } from '@/lib/subscription-context';
 import { useRouter } from 'expo-router';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/use-auth';
-import { Linking } from 'react-native';
+
+const LEGAL_BASE_URL = 'https://freshkeep-ctbgrbwn.manus.space';
+
+async function openLegalPage(path: string): Promise<void> {
+  const url = `${LEGAL_BASE_URL}${path}`;
+  if (Platform.OS === 'web') {
+    await Linking.openURL(url);
+  } else {
+    await WebBrowser.openBrowserAsync(url, {
+      presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+      toolbarColor: '#2D8A4E',
+      controlsColor: '#FFFFFF',
+    });
+  }
+}
 
 function SettingRow({
   icon, label, subtitle, right, onPress, danger
@@ -226,6 +241,18 @@ export default function SettingsScreen() {
             icon="💚"
             label="Preservation Methods"
             subtitle="8 techniques included"
+          />
+          <SettingRow
+            icon="🔒"
+            label="Privacy Policy"
+            subtitle="How we collect and protect your data"
+            onPress={() => openLegalPage('/privacy-policy')}
+          />
+          <SettingRow
+            icon="📄"
+            label="Terms of Service"
+            subtitle="Rules and conditions of use"
+            onPress={() => openLegalPage('/terms')}
           />
         </View>
 

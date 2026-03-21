@@ -212,3 +212,11 @@
 - [x] Create onboarding screen 3: Free trial CTA with "Start Free Trial" button
 - [x] First-launch detection via AsyncStorage
 - [x] Wire onboarding into root layout (_layout.tsx)
+
+## Privacy Policy & Legal Pages Follow-up
+- [x] Update privacy policy contact email to a real monitored address
+- [x] Add Privacy Policy link in Settings → About section (opens in-app browser)
+- [x] Add Terms of Service link in Settings → About section
+- [x] Create /terms route on Express server with full ToS HTML page
+- [x] Add /terms-of-service redirect alias
+- [x] Link both /privacy-policy and /terms from the Settings screen

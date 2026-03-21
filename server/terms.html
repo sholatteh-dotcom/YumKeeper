@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service – YumKeeper</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #2D8A4E;
+      --green-light: #E8F5E9;
+      --amber: #F4A228;
+      --text: #1A2E1C;
+      --muted: #6B7C6D;
+      --border: #D8E8DA;
+      --bg: #F9FAF7;
+      --surface: #FFFFFF;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo { font-size: 32px; line-height: 1; }
+
+    .brand { font-size: 22px; font-weight: 700; color: var(--green); letter-spacing: -0.3px; }
+    .brand-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    main {
+      max-width: 780px;
+      margin: 40px auto 80px;
+      padding: 0 24px;
+    }
+
+    .hero {
+      background: var(--green-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 { font-size: 28px; font-weight: 800; color: var(--green); margin-bottom: 8px; letter-spacing: -0.4px; }
+    .hero p { color: var(--muted); font-size: 14px; }
+
+    .hero .dates { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+    .hero .date-item { font-size: 13px; color: var(--muted); }
+    .hero .date-item strong { color: var(--text); display: block; font-size: 14px; }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 40px;
+    }
+
+    .toc h2 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 14px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: var(--green); text-decoration: none; font-size: 15px; font-weight: 500; }
+    .toc a:hover { text-decoration: underline; }
+
+    section { margin-bottom: 44px; }
+
+    h2 {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-top: 8px;
+      border-top: 2px solid var(--green-light);
+    }
+
+    h3 { font-size: 16px; font-weight: 700; color: var(--text); margin: 20px 0 8px; }
+
+    p { margin-bottom: 14px; color: var(--text); }
+
+    ul, ol { padding-left: 22px; margin-bottom: 14px; }
+    li { margin-bottom: 6px; }
+
+    .highlight-box {
+      background: var(--green-light);
+      border-left: 4px solid var(--green);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+    .highlight-box p { margin: 0; font-size: 15px; }
+
+    .warning-box {
+      background: #FFF8E1;
+      border-left: 4px solid var(--amber);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+    .warning-box p { margin: 0; font-size: 15px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--green-light);
+      color: var(--green);
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td { padding: 12px 16px; border-top: 1px solid var(--border); vertical-align: top; }
+    tr:hover td { background: var(--bg); }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-top: 20px;
+    }
+    .contact-card p { margin-bottom: 8px; }
+    .contact-card a { color: var(--green); font-weight: 600; text-decoration: none; }
+    .contact-card a:hover { text-decoration: underline; }
+
+    a { color: var(--green); }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 20px; }
+      main { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <span class="logo">🫙</span>
+    <div>
+      <div class="brand">YumKeeper</div>
+      <div class="brand-sub">Food Preservation App</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="hero">
+    <h1>Terms of Service</h1>
+    <p>Please read these Terms carefully before using YumKeeper. By downloading or using the App, you agree to be bound by these Terms.</p>
+    <div class="dates">
+      <div class="date-item"><strong>Effective date</strong>21 March 2026</div>
+      <div class="date-item"><strong>Last updated</strong>21 March 2026</div>
+      <div class="date-item"><strong>Version</strong>1.0</div>
+    </div>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#acceptance">Acceptance of Terms</a></li>
+      <li><a href="#description">Description of Service</a></li>
+      <li><a href="#eligibility">Eligibility</a></li>
+      <li><a href="#accounts">User Accounts</a></li>
+      <li><a href="#subscriptions">Subscriptions &amp; Payments</a></li>
+      <li><a href="#free-trial">Free Trial</a></li>
+      <li><a href="#acceptable-use">Acceptable Use</a></li>
+      <li><a href="#content">User Content</a></li>
+      <li><a href="#ip">Intellectual Property</a></li>
+      <li><a href="#disclaimers">Disclaimers</a></li>
+      <li><a href="#liability">Limitation of Liability</a></li>
+      <li><a href="#termination">Termination</a></li>
+      <li><a href="#changes">Changes to Terms</a></li>
+      <li><a href="#governing-law">Governing Law</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. Acceptance -->
+  <section id="acceptance">
+    <h2>1. Acceptance of Terms</h2>
+    <p>These Terms of Service ("Terms") constitute a legally binding agreement between you ("User", "you") and YumKeeper ("we", "us", "our") governing your access to and use of the YumKeeper mobile application and associated services (collectively, the "Service").</p>
+    <p>By downloading, installing, or using the App, you confirm that you have read, understood, and agree to be bound by these Terms and our <a href="/privacy-policy">Privacy Policy</a>, which is incorporated herein by reference. If you do not agree, you must not use the Service.</p>
+  </section>
+
+  <!-- 2. Description -->
+  <section id="description">
+    <h2>2. Description of Service</h2>
+    <p>YumKeeper is a food preservation and inventory management application that helps users track food items, monitor expiry dates, discover preservation techniques, generate shopping lists, and receive meal suggestions. The Service is available on Android and iOS platforms.</p>
+    <p>We reserve the right to modify, suspend, or discontinue any part of the Service at any time, with or without notice. We will not be liable to you or any third party for any modification, suspension, or discontinuation of the Service.</p>
+  </section>
+
+  <!-- 3. Eligibility -->
+  <section id="eligibility">
+    <h2>3. Eligibility</h2>
+    <p>You must be at least 13 years of age (or 16 years of age in certain EEA member states) to use the Service. By using the Service, you represent and warrant that you meet this age requirement. If you are under the applicable age of majority in your jurisdiction, you may only use the Service with the consent and supervision of a parent or legal guardian who agrees to these Terms on your behalf.</p>
+  </section>
+
+  <!-- 4. Accounts -->
+  <section id="accounts">
+    <h2>4. User Accounts</h2>
+    <p>Certain features of the Service require you to create an account. You agree to provide accurate, current, and complete information during registration and to keep your account information updated. You are responsible for maintaining the confidentiality of your account credentials and for all activity that occurs under your account.</p>
+    <p>You must notify us immediately of any unauthorised use of your account or any other breach of security. We will not be liable for any loss or damage arising from your failure to comply with this obligation.</p>
+    <p>We reserve the right to suspend or terminate your account if we reasonably believe that you have violated these Terms.</p>
+  </section>
+
+  <!-- 5. Subscriptions -->
+  <section id="subscriptions">
+    <h2>5. Subscriptions &amp; Payments</h2>
+    <p>YumKeeper offers the following subscription tiers:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Plan</th>
+          <th>Price</th>
+          <th>Features</th>
+          <th>Billing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Free</strong></td>
+          <td>£0 / forever</td>
+          <td>Up to 10 items, 3 preservation tips</td>
+          <td>No charge</td>
+        </tr>
+        <tr>
+          <td><strong>Fresh</strong></td>
+          <td>£2.99/mo or £19.99/yr</td>
+          <td>Unlimited items, barcode scanner, shopping list, all tips, notifications</td>
+          <td>Monthly or annual, auto-renewing</td>
+        </tr>
+        <tr>
+          <td><strong>Family</strong></td>
+          <td>£5.99/mo or £39.99/yr</td>
+          <td>Everything in Fresh, plus up to 6 family members</td>
+          <td>Monthly or annual, auto-renewing</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Billing</h3>
+    <p>Paid subscriptions are billed in advance on a monthly or annual basis. Payment is processed by Stripe, Inc. on our behalf. By subscribing, you authorise us to charge your payment method on a recurring basis until you cancel. All prices are inclusive of applicable taxes where required by law.</p>
+
+    <h3>Cancellation</h3>
+    <p>You may cancel your subscription at any time through the in-app Settings → Subscription → Manage Subscription screen or via the Stripe Customer Portal. Cancellation takes effect at the end of the current billing period; you will retain access to paid features until that date. We do not provide refunds for partial billing periods except where required by applicable law.</p>
+
+    <h3>Price Changes</h3>
+    <p>We reserve the right to change subscription prices. We will provide at least 30 days' notice of any price increase before it takes effect. Continued use of the Service after the price change constitutes acceptance of the new price.</p>
+
+    <div class="warning-box">
+      <p><strong>Refund policy:</strong> Subscription fees are non-refundable except where required by applicable consumer protection law (for example, the EU Consumer Rights Directive or UK Consumer Contracts Regulations). If you believe you are entitled to a refund, please contact us within 14 days of the charge.</p>
+    </div>
+  </section>
+
+  <!-- 6. Free Trial -->
+  <section id="free-trial">
+    <h2>6. Free Trial</h2>
+    <p>We may offer a 7-day free trial of the Fresh or Family plan to new subscribers. The free trial is available once per user and is not available to users who have previously held a paid subscription. At the end of the free trial period, your subscription will automatically convert to a paid subscription and you will be charged the applicable fee unless you cancel before the trial ends.</p>
+    <p>We reserve the right to modify or discontinue the free trial offer at any time without notice.</p>
+  </section>
+
+  <!-- 7. Acceptable Use -->
+  <section id="acceptable-use">
+    <h2>7. Acceptable Use</h2>
+    <p>You agree to use the Service only for lawful purposes and in a manner that does not infringe the rights of others. You must not:</p>
+    <ul>
+      <li>Use the Service for any unlawful, fraudulent, or malicious purpose.</li>
+      <li>Attempt to gain unauthorised access to any part of the Service, our servers, or any connected systems.</li>
+      <li>Reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the App.</li>
+      <li>Transmit any viruses, malware, or other harmful code through the Service.</li>
+      <li>Use automated tools (bots, scrapers, crawlers) to access or interact with the Service.</li>
+      <li>Resell, sublicense, or otherwise commercialise the Service without our prior written consent.</li>
+      <li>Impersonate any person or entity or misrepresent your affiliation with any person or entity.</li>
+      <li>Violate any applicable local, national, or international law or regulation.</li>
+    </ul>
+    <p>We reserve the right to investigate and take appropriate action against anyone who, in our sole discretion, violates these provisions, including suspending or terminating their account.</p>
+  </section>
+
+  <!-- 8. User Content -->
+  <section id="content">
+    <h2>8. User Content</h2>
+    <p>The Service allows you to input and store personal data such as food item names, quantities, expiry dates, and notes ("User Content"). You retain full ownership of your User Content. By using the Service, you grant us a limited, non-exclusive, royalty-free licence to store and process your User Content solely for the purpose of providing the Service to you.</p>
+    <p>You are solely responsible for the accuracy of your User Content. We do not verify or validate any food safety information you enter, and the App is not a substitute for professional food safety advice.</p>
+
+    <div class="highlight-box">
+      <p><strong>Local-first storage:</strong> By default, your User Content is stored only on your device and is not transmitted to our servers. Cloud sync features (where available on paid plans) transmit your data to our servers. See our <a href="/privacy-policy">Privacy Policy</a> for full details.</p>
+    </div>
+  </section>
+
+  <!-- 9. Intellectual Property -->
+  <section id="ip">
+    <h2>9. Intellectual Property</h2>
+    <p>The Service and all content, features, and functionality thereof — including but not limited to the YumKeeper name, logo, design, text, graphics, software, and the compilation thereof — are owned by YumKeeper and are protected by copyright, trademark, and other intellectual property laws.</p>
+    <p>We grant you a limited, non-exclusive, non-transferable, revocable licence to use the App on your personal device solely for your personal, non-commercial use in accordance with these Terms. This licence does not include any right to sublicense, modify, adapt, translate, reverse engineer, or create derivative works of the App.</p>
+    <p>Any feedback, suggestions, or ideas you provide to us regarding the Service may be used by us without any obligation to you.</p>
+  </section>
+
+  <!-- 10. Disclaimers -->
+  <section id="disclaimers">
+    <h2>10. Disclaimers</h2>
+    <p>The Service is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+
+    <div class="warning-box">
+      <p><strong>Food safety disclaimer:</strong> YumKeeper provides general food preservation guidance and expiry tracking tools for informational purposes only. The App is not a substitute for professional food safety advice. Expiry dates and preservation guidelines are estimates only. Always use your own judgement when assessing whether food is safe to consume. We accept no liability for any illness, injury, or loss arising from reliance on information provided by the App.</p>
+    </div>
+
+    <p>We do not warrant that the Service will be uninterrupted, error-free, or free of viruses or other harmful components. We do not warrant the accuracy, completeness, or usefulness of any information provided through the Service.</p>
+    <p>Some jurisdictions do not allow the exclusion of implied warranties, so some of the above exclusions may not apply to you.</p>
+  </section>
+
+  <!-- 11. Limitation of Liability -->
+  <section id="liability">
+    <h2>11. Limitation of Liability</h2>
+    <p>To the fullest extent permitted by applicable law, YumKeeper and its officers, directors, employees, agents, and licensors shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, goodwill, or other intangible losses, arising out of or in connection with:</p>
+    <ul>
+      <li>Your use of or inability to use the Service.</li>
+      <li>Any unauthorised access to or use of our servers or any personal information stored therein.</li>
+      <li>Any interruption or cessation of transmission to or from the Service.</li>
+      <li>Any bugs, viruses, or other harmful code that may be transmitted through the Service.</li>
+      <li>Any errors or omissions in any content provided through the Service.</li>
+    </ul>
+    <p>In no event shall our total aggregate liability to you for all claims arising out of or relating to these Terms or the Service exceed the greater of (a) the total amount you paid to us in the 12 months preceding the claim, or (b) £10.</p>
+    <p>Nothing in these Terms shall limit or exclude our liability for death or personal injury caused by our negligence, fraud or fraudulent misrepresentation, or any other liability that cannot be excluded or limited by applicable law.</p>
+  </section>
+
+  <!-- 12. Termination -->
+  <section id="termination">
+    <h2>12. Termination</h2>
+    <p>You may stop using the Service at any time by uninstalling the App and cancelling any active subscription. We may suspend or terminate your access to the Service immediately, without prior notice or liability, if you breach these Terms or if we are required to do so by law.</p>
+    <p>Upon termination, your right to use the Service will immediately cease. Sections 9 (Intellectual Property), 10 (Disclaimers), 11 (Limitation of Liability), and 14 (Governing Law) shall survive termination.</p>
+  </section>
+
+  <!-- 13. Changes -->
+  <section id="changes">
+    <h2>13. Changes to Terms</h2>
+    <p>We reserve the right to modify these Terms at any time. When we make material changes, we will update the "Last updated" date at the top of this page and, where appropriate, notify you via in-app notification or email. Your continued use of the Service after the effective date of the revised Terms constitutes your acceptance of the changes.</p>
+    <p>If you do not agree to the revised Terms, you must stop using the Service and cancel any active subscription.</p>
+  </section>
+
+  <!-- 14. Governing Law -->
+  <section id="governing-law">
+    <h2>14. Governing Law &amp; Dispute Resolution</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of England and Wales, without regard to its conflict of law provisions. Any dispute arising out of or in connection with these Terms shall be subject to the exclusive jurisdiction of the courts of England and Wales, except that:</p>
+    <ul>
+      <li>If you are a consumer resident in the EU, you may also bring proceedings in the courts of your country of residence, and you may use the EU Online Dispute Resolution platform at <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">ec.europa.eu/consumers/odr</a>.</li>
+      <li>If you are a consumer resident in the UK, you may refer disputes to the UK's Alternative Dispute Resolution (ADR) schemes.</li>
+    </ul>
+    <p>Nothing in this section affects your statutory rights as a consumer under applicable law.</p>
+  </section>
+
+  <!-- 15. Contact -->
+  <section id="contact">
+    <h2>15. Contact</h2>
+    <p>If you have any questions about these Terms of Service, please contact us:</p>
+
+    <div class="contact-card">
+      <p><strong>YumKeeper – Legal</strong></p>
+      <p>📧 Email: <a href="mailto:legal@freshkeep-ctbgrbwn.manus.space">legal@freshkeep-ctbgrbwn.manus.space</a></p>
+      <p>🔒 Privacy Policy: <a href="/privacy-policy">freshkeep-ctbgrbwn.manus.space/privacy-policy</a></p>
+      <p>🌐 App: <a href="https://freshkeep-ctbgrbwn.manus.space">freshkeep-ctbgrbwn.manus.space</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 YumKeeper. All rights reserved.</p>
+  <p style="margin-top: 6px;">These Terms of Service were last reviewed on 21 March 2026 and are governed by the laws of England and Wales.</p>
+  <p style="margin-top: 6px;">
+    <a href="/privacy-policy" style="color: var(--green); text-decoration: none; margin: 0 8px;">Privacy Policy</a>
+    ·
+    <a href="/terms" style="color: var(--green); text-decoration: none; margin: 0 8px;">Terms of Service</a>
+  </p>
+</footer>
+
+</body>
+</html>

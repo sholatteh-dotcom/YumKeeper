@@ -77,6 +77,15 @@ async function startServer() {
     res.redirect(301, "/privacy-policy");
   });
 
+  app.get("/terms", (_req, res) => {
+    res.sendFile(path.join(__dirname, "../../server/terms.html"));
+  });
+
+  // Convenience redirect: /terms-of-service → /terms
+  app.get("/terms-of-service", (_req, res) => {
+    res.redirect(301, "/terms");
+  });
+
   app.use(
     "/api/trpc",
     createExpressMiddleware({
