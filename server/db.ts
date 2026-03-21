@@ -1,6 +1,6 @@
 import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users, subscriptions, InsertSubscription, Subscription, consentRecords, InsertConsentRecord, ConsentRecord } from "../drizzle/schema";
+import { InsertUser, users, subscriptions, InsertSubscription, Subscription, consentRecords, InsertConsentRecord, ConsentRecord, deletionRequests, InsertDeletionRequest, DeletionRequest } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -138,8 +138,54 @@ export async function upsertConsentRecord(data: InsertConsentRecord): Promise<vo
 }
 
 /**
- * Returns the most recent consent record for a user, or undefined if none.
+ * Returns a summary of consent status for all users against a given policy version.
+ * Used by the admin panel to identify users who have not yet consented.
  */
+export async function getConsentStatusSummary(policyVersion: string): Promise<{
+  totalUsers: number;
+  consentedCount: number;
+  pendingCount: number;
+  pendingUsers: Array<{ userId: number; email: string | null; name: string | null; lastConsentedVersion: string | null }>;
+}> {
+  const db = await getDb();
+  if (!db) {
+    return { totalUsers: 0, consentedCount: 0, pendingCount: 0, pendingUsers: [] };
+  }
+
+  // Get all users
+  const allUsers = await db.select({ id: users.id, email: users.email, name: users.name }).from(users);
+
+  // Get all consent records for this policy version
+  const consentedRecords = await db
+    .select({ userId: consentRecords.userId })
+    .from(consentRecords)
+    .where(eq(consentRecords.policyVersion, policyVersion));
+
+  const consentedUserIds = new Set(consentedRecords.map((r) => r.userId));
+
+  // Get latest consent version for non-consented users
+  const pendingUsers = await Promise.all(
+    allUsers
+      .filter((u) => !consentedUserIds.has(u.id))
+      .map(async (u) => {
+        const latest = await getLatestConsentRecord(u.id);
+        return {
+          userId: u.id,
+          email: u.email ?? null,
+          name: u.name ?? null,
+          lastConsentedVersion: latest?.policyVersion ?? null,
+        };
+      }),
+  );
+
+  return {
+    totalUsers: allUsers.length,
+    consentedCount: consentedUserIds.size,
+    pendingCount: pendingUsers.length,
+    pendingUsers,
+  };
+}
+
 export async function getLatestConsentRecord(userId: number): Promise<ConsentRecord | undefined> {
   const db = await getDb();
   if (!db) return undefined;
@@ -158,4 +204,48 @@ export async function updateSubscriptionByCustomerId(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.update(subscriptions).set({ ...data, updatedAt: new Date() }).where(eq(subscriptions.stripeCustomerId, customerId));
+}
+
+// ─── GDPR Deletion Requests ────────────────────────────────────────────────
+
+/**
+ * Creates a new GDPR Article 17 erasure request for a user.
+ * Returns the inserted record ID, or null if DB is unavailable.
+ */
+export async function createDeletionRequest(userId: number, platform?: string): Promise<number | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot create deletion request: database not available");
+    return null;
+  }
+  // Check for an existing pending request to avoid duplicates
+  const existing = await db
+    .select({ id: deletionRequests.id })
+    .from(deletionRequests)
+    .where(eq(deletionRequests.userId, userId))
+    .limit(1);
+  if (existing.length > 0) {
+    return existing[0].id; // Return existing request id
+  }
+  const result = await db.insert(deletionRequests).values({
+    userId,
+    requestedAt: new Date(),
+    status: "pending",
+    notes: platform ? `Requested via ${platform}` : null,
+  });
+  return (result as unknown as { insertId: number }).insertId ?? null;
+}
+
+/**
+ * Returns the latest deletion request for a user, or null if none exists.
+ */
+export async function getDeletionRequest(userId: number): Promise<DeletionRequest | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const result = await db
+    .select()
+    .from(deletionRequests)
+    .where(eq(deletionRequests.userId, userId))
+    .limit(1);
+  return result[0] ?? null;
 }

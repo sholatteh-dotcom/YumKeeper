@@ -1,13 +1,13 @@
 import { z } from "zod/v4";
-import { protectedProcedure, router } from "./_core/trpc";
-import { upsertConsentRecord, getLatestConsentRecord } from "./db";
+import { protectedProcedure, adminProcedure, router } from "./_core/trpc";
+import { upsertConsentRecord, getLatestConsentRecord, getConsentStatusSummary, createDeletionRequest, getDeletionRequest } from "./db";
 
 /**
  * Current policy version — bump this string whenever the ToS or Privacy Policy
  * is materially updated. The app compares this against the stored consent version
  * and prompts the user to re-consent if they differ.
  */
-export const CURRENT_POLICY_VERSION = "1.0";
+export const CURRENT_POLICY_VERSION = "1.1";
 
 export const legalRouter = router({
   /**
@@ -32,6 +32,48 @@ export const legalRouter = router({
       });
       return { success: true, policyVersion: CURRENT_POLICY_VERSION } as const;
     }),
+
+  /**
+   * Submits a GDPR Article 17 erasure request for the authenticated user.
+   * The request is logged to the database and processed within 30 days.
+   */
+  requestDeletion: protectedProcedure
+    .input(z.object({ platform: z.string().optional() }))
+    .mutation(async ({ ctx, input }) => {
+      const requestId = await createDeletionRequest(ctx.user.id, input.platform);
+      return {
+        success: true,
+        requestId,
+        message: "Your data deletion request has been received. We will process it within 30 days and send a confirmation to your email address.",
+      } as const;
+    }),
+
+  /**
+   * Returns the current deletion request status for the authenticated user.
+   * Used to show the user whether their request is pending, processing, or completed.
+   */
+  deletionStatus: protectedProcedure.query(async ({ ctx }) => {
+    const request = await getDeletionRequest(ctx.user.id);
+    return {
+      hasRequest: request !== null,
+      status: request?.status ?? null,
+      requestedAt: request?.requestedAt ?? null,
+      completedAt: request?.completedAt ?? null,
+    };
+  }),
+
+  /**
+   * Admin-only: returns a summary of consent status across all users for the
+   * current policy version. Used in the admin panel to identify users who
+   * have not yet consented and may need a reminder push notification.
+   */
+  adminConsentStatus: adminProcedure.query(async () => {
+    const summary = await getConsentStatusSummary(CURRENT_POLICY_VERSION);
+    return {
+      currentVersion: CURRENT_POLICY_VERSION,
+      ...summary,
+    };
+  }),
 
   /**
    * Returns the current policy version and whether the authenticated user has

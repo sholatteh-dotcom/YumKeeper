@@ -7,7 +7,7 @@ const CONSENT_KEY = "@yumkeeper:legal_consent";
  * Current policy version — must match CURRENT_POLICY_VERSION in server/legal-router.ts.
  * Bump this string whenever the ToS or Privacy Policy is materially updated.
  */
-export const CURRENT_POLICY_VERSION = "1.0";
+export const CURRENT_POLICY_VERSION = "1.1";
 
 /**
  * Returns true if the user has NOT yet completed onboarding

@@ -56,3 +56,19 @@ export const consentRecords = mysqlTable("consent_records", {
 
 export type ConsentRecord = typeof consentRecords.$inferSelect;
 export type InsertConsentRecord = typeof consentRecords.$inferInsert;
+
+/**
+ * GDPR Article 17 erasure requests. Stores a log of user-initiated data
+ * deletion requests. Requests are processed within 30 days per the privacy policy.
+ */
+export const deletionRequests = mysqlTable("deletion_requests", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("user_id").notNull(),
+  requestedAt: timestamp("requested_at").notNull().defaultNow(),
+  status: mysqlEnum("status", ["pending", "processing", "completed", "cancelled"]).default("pending").notNull(),
+  completedAt: timestamp("completed_at"),
+  notes: varchar("notes", { length: 500 }),
+});
+
+export type DeletionRequest = typeof deletionRequests.$inferSelect;
+export type InsertDeletionRequest = typeof deletionRequests.$inferInsert;

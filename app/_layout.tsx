@@ -125,6 +125,7 @@ export default function RootLayout() {
                   <Stack.Screen name="pricing" options={{ presentation: 'modal' }} />
                   <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
                   <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
+                  <Stack.Screen name="admin-consent" options={{ headerShown: false }} />
                 </Stack>
                 <StatusBar style="auto" />
                 <ReConsentModal

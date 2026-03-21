@@ -66,7 +66,7 @@ export default function SettingsScreen() {
   const router = useRouter();
   const { items, stats } = useFoodContext();
   const subscription = useSubscription();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const createPortalMutation = trpc.stripe.createPortalSession.useMutation();
 
   const handleManageSubscription = async () => {
@@ -85,6 +85,50 @@ export default function SettingsScreen() {
   const [notif1Day, setNotif1Day] = useState(true);
   const [notif3Days, setNotif3Days] = useState(true);
   const [notif7Days, setNotif7Days] = useState(false);
+
+  const requestDeletionMutation = trpc.legal.requestDeletion.useMutation();
+  const deletionStatusQuery = trpc.legal.deletionStatus.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const handleDeleteMyData = () => {
+    if (deletionStatusQuery.data?.hasRequest) {
+      const status = deletionStatusQuery.data.status;
+      const requestedAt = deletionStatusQuery.data.requestedAt
+        ? new Date(deletionStatusQuery.data.requestedAt).toLocaleDateString()
+        : 'unknown date';
+      Alert.alert(
+        'Request Already Submitted',
+        `You submitted a data deletion request on ${requestedAt}. Current status: ${status?.toUpperCase() ?? 'PENDING'}. We will process it within 30 days.`,
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+    Alert.alert(
+      'Delete My Data',
+      'This will submit a GDPR Article 17 erasure request. All your personal data will be permanently deleted within 30 days. This action cannot be undone.\n\nA confirmation will be sent to your email address.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Submit Request',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const result = await requestDeletionMutation.mutateAsync({ platform: 'mobile' });
+              deletionStatusQuery.refetch();
+              Alert.alert(
+                'Request Submitted ✓',
+                result.message,
+                [{ text: 'OK' }]
+              );
+            } catch {
+              Alert.alert('Error', 'Could not submit your deletion request. Please try again or contact privacy@freshkeep-ctbgrbwn.manus.space');
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const handleClearData = () => {
     Alert.alert(
@@ -226,6 +270,19 @@ export default function SettingsScreen() {
             onPress={handleClearData}
             danger
           />
+          {isAuthenticated && (
+            <SettingRow
+              icon="❌"
+              label="Delete My Data"
+              subtitle={
+                deletionStatusQuery.data?.hasRequest
+                  ? `Request ${deletionStatusQuery.data.status?.toUpperCase() ?? 'PENDING'} — tap to view status`
+                  : 'Submit a GDPR erasure request (Art. 17)'
+              }
+              onPress={handleDeleteMyData}
+              danger
+            />
+          )}
         </View>
 
         {/* About */}
@@ -255,6 +312,21 @@ export default function SettingsScreen() {
             onPress={() => openLegalPage('/terms')}
           />
         </View>
+
+        {/* Admin Panel — only shown to admin users */}
+        {user?.role === 'admin' && (
+          <>
+            <SectionHeader title="Admin" />
+            <View style={[styles.section, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <SettingRow
+                icon="🛡️"
+                label="Consent Status Panel"
+                subtitle="Monitor policy consent across all users"
+                onPress={() => router.push('/admin-consent')}
+              />
+            </View>
+          </>
+        )}
 
         {/* Tips Section */}
         <View style={[styles.tipsBox, { backgroundColor: colors.primary + '15', borderColor: colors.primary + '30' }]}>

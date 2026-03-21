@@ -257,3 +257,15 @@
 - [x] Show re-consent modal if policy version is newer than stored consent
 - [x] Re-consent modal links to updated ToS and Privacy Policy
 - [x] On re-consent, update AsyncStorage and sync to server
+
+## Legal Compliance Follow-up (Round 4)
+- [x] Bump CURRENT_POLICY_VERSION to 1.1 in lib/onboarding.ts and server/legal-router.ts
+- [x] Update re-consent modal "What changed" summary for v1.1
+- [x] Add legal.adminConsentStatus tRPC endpoint (admin-only) listing non-consented users
+- [x] Add admin consent panel screen in app (admin role only)
+- [x] Add deletion_requests table to database schema
+- [x] Add legal.requestDeletion tRPC endpoint to log GDPR erasure requests
+- [x] Add "Delete my account and data" button in Settings → About
+- [x] Show confirmation dialog before submitting deletion request
+- [x] Show success/error feedback after deletion request submitted
+- [x] Store deletion request in DB with userId, requestedAt, status

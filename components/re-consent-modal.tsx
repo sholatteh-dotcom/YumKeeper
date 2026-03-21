@@ -53,21 +53,21 @@ export function ReConsentModal({ visible, onConsent }: ReConsentModalProps) {
 
           <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
             <Text style={[styles.body_text, { color: colors.muted }]}>
-              Our Terms of Service and Privacy Policy have been updated (version {CURRENT_POLICY_VERSION}).
-              Please review the changes and confirm your agreement to continue using YumKeeper.
+              Our Terms of Service and Privacy Policy have been updated to version {CURRENT_POLICY_VERSION}.
+              Please review the changes below and confirm your agreement to continue using YumKeeper.
             </Text>
 
             {/* What changed */}
             <View style={[styles.changeBox, { backgroundColor: colors.background, borderColor: colors.border }]}>
               <Text style={[styles.changeTitle, { color: colors.foreground }]}>What changed</Text>
               <Text style={[styles.changeItem, { color: colors.muted }]}>
-                • Clarified data retention periods for food inventory items
+                • Added GDPR Article 17 "Delete my data" request mechanism
               </Text>
               <Text style={[styles.changeItem, { color: colors.muted }]}>
-                • Updated third-party processor list (Stripe SDK update)
+                • Added admin consent status monitoring panel
               </Text>
               <Text style={[styles.changeItem, { color: colors.muted }]}>
-                • Added Dutch language support to legal pages
+                • Clarified data deletion timelines (30 days) in Section 12
               </Text>
             </View>
 
