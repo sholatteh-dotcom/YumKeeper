@@ -283,3 +283,10 @@
 - [x] Add automated daily purge job (cron) for requests older than 30 days
 - [x] Purge job deletes food inventory, consent records, and subscription data
 - [x] Purge job marks deletion_requests status as "completed"
+
+## Promotional Ad Page
+- [x] Generate hero banner and feature images for YumKeeper ad
+- [x] Build full-page promotional ad at /ad with hero, features, how-it-works, savings callout, testimonials, and CTA
+- [x] Add /download redirect alias to /ad
+- [x] Wire Open Graph and Twitter Card meta tags for social sharing
+- [x] Link ad page to Privacy Policy, Terms of Service, and app download

@@ -97,6 +97,18 @@ async function startServer() {
     res.redirect(301, "/terms");
   });
 
+  // ─── Promotional ad landing page ──────────────────────────────────────────
+  // Publicly shareable ad page with app download links and feature highlights.
+  // Suitable for Google Ads, social media, and app store listing links.
+  app.get("/ad", (_req, res) => {
+    res.sendFile(path.join(__dirnameESM, "../../server/ad.html"));
+  });
+
+  // Convenience redirect: /download → /ad
+  app.get("/download", (_req, res) => {
+    res.redirect(301, "/ad");
+  });
+
   app.use(
     "/api/trpc",
     createExpressMiddleware({

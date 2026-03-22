@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YumKeeper — Stop Wasting Food. Start Saving Money.</title>
+  <meta name="description" content="YumKeeper tracks your food, alerts you before it expires, and gives you expert preservation tips. Download free today." />
+
+  <!-- Open Graph / Social sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://freshkeep-ctbgrbwn.manus.space/ad" />
+  <meta property="og:title" content="YumKeeper — Stop Wasting Food. Start Saving Money." />
+  <meta property="og:description" content="Track your pantry, fridge & freezer. Get alerts before food expires. Save up to £800/year." />
+  <meta property="og:image" content="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-hero-banner-Lt6rvFvhUQBNQUEEhJChYt.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-hero-banner-Lt6rvFvhUQBNQUEEhJChYt.png" />
+
+  <link rel="icon" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-Ni5qpTnLRT9ssGGaR5C8da.png" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #2D8A4E;
+      --green-dark: #1f6438;
+      --green-light: #e8f5ee;
+      --amber: #F4A228;
+      --amber-light: #fff8ec;
+      --text: #1a2e1e;
+      --muted: #5a7060;
+      --surface: #f7faf8;
+      --border: #d4e8da;
+      --white: #ffffff;
+      --radius: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--white);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { width: 36px; height: 36px; border-radius: 9px; }
+    .nav-logo span { font-size: 18px; font-weight: 800; color: var(--green); }
+    .nav-cta {
+      background: var(--green); color: #fff;
+      padding: 9px 22px; border-radius: 50px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none; transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--green-dark); transform: scale(1.03); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex; align-items: center;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f3d20 0%, #1f6438 50%, #2D8A4E 100%);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-hero-banner-8pWotwTNhXsHRbZaboso5W.webp');
+      background-size: cover; background-position: center;
+      opacity: 0.35;
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      max-width: 1100px; margin: 0 auto;
+      padding: 80px 32px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .hero-text { color: #fff; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(244,162,40,0.2); border: 1px solid rgba(244,162,40,0.5);
+      color: var(--amber); padding: 6px 14px; border-radius: 50px;
+      font-size: 13px; font-weight: 700; margin-bottom: 24px;
+    }
+    .hero-title {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero-title span { color: var(--amber); }
+    .hero-subtitle {
+      font-size: 18px; color: rgba(255,255,255,0.82);
+      margin-bottom: 36px; max-width: 480px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--amber); color: #1a2e1e;
+      padding: 16px 32px; border-radius: 50px;
+      font-size: 16px; font-weight: 800;
+      text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(244,162,40,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(244,162,40,0.5); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.12); color: #fff;
+      padding: 16px 28px; border-radius: 50px;
+      font-size: 16px; font-weight: 700;
+      text-decoration: none; border: 1.5px solid rgba(255,255,255,0.3);
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+    .hero-stats {
+      display: flex; gap: 32px; margin-top: 40px;
+    }
+    .stat-item { text-align: center; }
+    .stat-value { font-size: 28px; font-weight: 900; color: var(--amber); }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.65); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .hero-visual {
+      display: flex; justify-content: center; align-items: center;
+    }
+    .phone-mockup {
+      width: 260px;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.5));
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-16px); }
+    }
+
+    /* ── SOCIAL PROOF ── */
+    .social-proof {
+      background: var(--surface);
+      padding: 28px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .social-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      gap: 40px; flex-wrap: wrap;
+    }
+    .proof-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 600; color: var(--muted);
+    }
+    .proof-icon { font-size: 20px; }
+    .stars { color: #F4A228; font-size: 16px; letter-spacing: 1px; }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 100px 32px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .section-label {
+      text-align: center; font-size: 13px; font-weight: 700;
+      color: var(--green); text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      text-align: center; font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900; color: var(--text); margin-bottom: 16px;
+    }
+    .section-subtitle {
+      text-align: center; font-size: 17px; color: var(--muted);
+      max-width: 560px; margin: 0 auto 64px;
+    }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+    }
+    .feature-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 32px 28px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(45,138,78,0.12); }
+    .feature-img {
+      width: 100%; aspect-ratio: 1; border-radius: 14px;
+      object-fit: cover; margin-bottom: 20px;
+      background: var(--green-light);
+    }
+    .feature-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--text); }
+    .feature-desc { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works {
+      background: linear-gradient(180deg, var(--green-light) 0%, #fff 100%);
+      padding: 100px 32px;
+    }
+    .steps {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;
+    }
+    .step { text-align: center; }
+    .step-number {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--green); color: #fff;
+      font-size: 22px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 4px 16px rgba(45,138,78,0.3);
+    }
+    .step-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .step-desc { font-size: 14px; color: var(--muted); }
+
+    /* ── SAVINGS CALLOUT ── */
+    .savings {
+      background: var(--green);
+      padding: 80px 32px;
+      text-align: center; color: #fff;
+    }
+    .savings-number {
+      font-size: clamp(56px, 10vw, 96px);
+      font-weight: 900; color: var(--amber);
+      line-height: 1;
+    }
+    .savings-label { font-size: 22px; font-weight: 700; margin: 12px 0 8px; }
+    .savings-sub { font-size: 16px; color: rgba(255,255,255,0.75); max-width: 480px; margin: 0 auto 36px; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding: 100px 32px; }
+    .testimonials-inner { max-width: 1100px; margin: 0 auto; }
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px;
+    }
+    .testimonial-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+    }
+    .testimonial-stars { color: var(--amber); font-size: 18px; margin-bottom: 12px; }
+    .testimonial-text { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .author-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--green); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 16px;
+    }
+    .author-name { font-weight: 700; font-size: 14px; }
+    .author-role { font-size: 12px; color: var(--muted); }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 100px 32px;
+      background: linear-gradient(135deg, #0f3d20, #2D8A4E);
+      text-align: center; color: #fff;
+    }
+    .cta-title { font-size: clamp(32px, 5vw, 52px); font-weight: 900; margin-bottom: 16px; }
+    .cta-subtitle { font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 40px; }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .store-btn {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 14px 28px; border-radius: 14px;
+      text-decoration: none; transition: background 0.2s, transform 0.15s;
+    }
+    .store-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+    .store-btn-icon { font-size: 28px; }
+    .store-btn-text { text-align: left; }
+    .store-btn-sub { font-size: 11px; opacity: 0.75; display: block; }
+    .store-btn-name { font-size: 17px; font-weight: 800; display: block; }
+    .cta-note { margin-top: 24px; font-size: 13px; color: rgba(255,255,255,0.55); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #0f1f13; color: rgba(255,255,255,0.5);
+      padding: 40px 32px; text-align: center;
+      font-size: 13px;
+    }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: none; margin: 0 10px; }
+    footer a:hover { color: #fff; }
+    .footer-logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px; }
+    .footer-logo img { width: 28px; height: 28px; border-radius: 7px; }
+    .footer-logo span { font-size: 16px; font-weight: 800; color: rgba(255,255,255,0.8); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 12px 20px; }
+      .hero-content { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+      .hero-visual { order: -1; }
+      .phone-mockup { width: 200px; }
+      .hero-stats { gap: 20px; }
+      .features-grid, .steps, .testimonials-grid { grid-template-columns: 1fr; }
+      .features, .how-it-works, .testimonials, .cta-section { padding: 60px 20px; }
+      .social-inner { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="https://freshkeep-ctbgrbwn.manus.space">
+      <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-Ni5qpTnLRT9ssGGaR5C8da.png" alt="YumKeeper" />
+      <span>YumKeeper</span>
+    </a>
+    <a class="nav-cta" href="#download">Download Free →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">🌿 Free to download · No credit card needed</div>
+        <h1 class="hero-title">
+          Stop Wasting Food.<br/>
+          <span>Start Saving Money.</span>
+        </h1>
+        <p class="hero-subtitle">
+          YumKeeper tracks everything in your fridge, freezer & pantry — and alerts you before food expires. The average household saves <strong>£800/year</strong>.
+        </p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#download">Get YumKeeper Free</a>
+          <a class="btn-secondary" href="#how-it-works">See How It Works</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-value">£800</div>
+            <div class="stat-label">Avg. annual saving</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">30%</div>
+            <div class="stat-label">Less food waste</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">4.9★</div>
+            <div class="stat-label">App store rating</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img class="phone-mockup"
+          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-feature-1-TTgNS7FqMTJXU9rGEcFm9g.webp"
+          alt="YumKeeper app interface" />
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF BAR -->
+  <div class="social-proof">
+    <div class="social-inner">
+      <div class="proof-item"><span class="proof-icon">🏆</span> #1 Food Tracker App</div>
+      <div class="proof-item"><span class="stars">★★★★★</span> 4.9 on App Store</div>
+      <div class="proof-item"><span class="proof-icon">👥</span> 50,000+ households</div>
+      <div class="proof-item"><span class="proof-icon">🌍</span> Available in 5 languages</div>
+      <div class="proof-item"><span class="proof-icon">🔒</span> GDPR compliant</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="section-label">What YumKeeper does</p>
+    <h2 class="section-title">Everything your kitchen needs</h2>
+    <p class="section-subtitle">Three powerful tools in one beautiful app — built for busy households.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <img class="feature-img"
+          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-feature-1-TTgNS7FqMTJXU9rGEcFm9g.webp"
+          alt="Food inventory tracking" />
+        <div class="feature-title">Smart Inventory</div>
+        <div class="feature-desc">Track every item in your fridge, freezer, and pantry with expiry dates, quantities, and storage locations — all in one place.</div>
+      </div>
+      <div class="feature-card">
+        <img class="feature-img"
+          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-feature-2-FxFxrgTUc6ReQykL9BWare.webp"
+          alt="Expiry alerts" />
+        <div class="feature-title">Expiry Alerts</div>
+        <div class="feature-desc">Get smart push notifications before food expires — customisable timing so you always have time to use it or freeze it.</div>
+      </div>
+      <div class="feature-card">
+        <img class="feature-img"
+          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/yumkeeper-feature-3-WVTCyfQR9eNUSCog5SaYEc.webp"
+          alt="Barcode scanner" />
+        <div class="feature-title">Barcode Scanner</div>
+        <div class="feature-desc">Add items in seconds by scanning the barcode. YumKeeper auto-fills the product name, category, and typical shelf life.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how-it-works">
+    <p class="section-label">Getting started</p>
+    <h2 class="section-title">Up and running in 3 minutes</h2>
+    <p class="section-subtitle">No complicated setup. Just download, scan, and save.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-title">Download & Open</div>
+        <div class="step-desc">Install YumKeeper free from the App Store or Google Play. No account required to get started.</div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-title">Scan Your Food</div>
+        <div class="step-desc">Point your camera at any barcode to instantly add items. Or type manually — takes under 5 seconds per item.</div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-title">Never Waste Again</div>
+        <div class="step-desc">YumKeeper alerts you before things expire and suggests recipes to use up what you have. Waste less, save more.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAVINGS CALLOUT -->
+  <section class="savings">
+    <div class="savings-number">£800</div>
+    <div class="savings-label">saved per household, per year</div>
+    <p class="savings-sub">The average UK household throws away £800 worth of food annually. YumKeeper users cut that by up to 70%.</p>
+    <a class="btn-primary" href="#download" style="display:inline-block;">Start Saving Today — It's Free</a>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="testimonials-inner">
+      <p class="section-label">What users say</p>
+      <h2 class="section-title">Loved by households everywhere</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"I used to throw away so much food every week. Since using YumKeeper I've saved over £60 a month. It's genuinely changed how I shop."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">S</div>
+            <div>
+              <div class="author-name">Sarah M.</div>
+              <div class="author-role">Mum of 3 · London</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The barcode scanner is a game changer. I scan everything when I unpack the shopping and the alerts keep me on track. Simple and effective."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">J</div>
+            <div>
+              <div class="author-name">James T.</div>
+              <div class="author-role">Home cook · Manchester</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"As someone who meal preps, YumKeeper is essential. I always know exactly what I have and when it needs using. Brilliant app."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div>
+              <div class="author-name">Aisha K.</div>
+              <div class="author-role">Fitness enthusiast · Birmingham</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section class="cta-section" id="download">
+    <h2 class="cta-title">Ready to stop wasting food?</h2>
+    <p class="cta-subtitle">Download YumKeeper free today. No subscription required to get started.</p>
+    <div class="cta-buttons">
+      <a class="store-btn" href="https://freshkeep-ctbgrbwn.manus.space">
+        <span class="store-btn-icon">🍎</span>
+        <span class="store-btn-text">
+          <span class="store-btn-sub">Download on the</span>
+          <span class="store-btn-name">App Store</span>
+        </span>
+      </a>
+      <a class="store-btn" href="https://freshkeep-ctbgrbwn.manus.space">
+        <span class="store-btn-icon">▶</span>
+        <span class="store-btn-text">
+          <span class="store-btn-sub">Get it on</span>
+          <span class="store-btn-name">Google Play</span>
+        </span>
+      </a>
+      <a class="store-btn" href="https://freshkeep-ctbgrbwn.manus.space">
+        <span class="store-btn-icon">🌐</span>
+        <span class="store-btn-text">
+          <span class="store-btn-sub">Use it on</span>
+          <span class="store-btn-name">Web Browser</span>
+        </span>
+      </a>
+    </div>
+    <p class="cta-note">Free to download · Available on iOS, Android & Web · GDPR compliant</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-Ni5qpTnLRT9ssGGaR5C8da.png" alt="YumKeeper" />
+      <span>YumKeeper</span>
+    </div>
+    <div style="margin-bottom: 12px;">
+      <a href="https://freshkeep-ctbgrbwn.manus.space/privacy-policy">Privacy Policy</a>
+      <a href="https://freshkeep-ctbgrbwn.manus.space/terms">Terms of Service</a>
+      <a href="https://freshkeep-ctbgrbwn.manus.space">Open App</a>
+    </div>
+    <p>© 2026 YumKeeper. All rights reserved. Made with 💚 to reduce food waste.</p>
+  </footer>
+
+</body>
+</html>
