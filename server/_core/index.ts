@@ -104,6 +104,11 @@ async function startServer() {
     res.sendFile(path.join(__dirnameESM, "../../server/ad.html"));
   });
 
+  // A/B variant
+  app.get("/ad-b", (_req, res) => {
+    res.sendFile(path.join(__dirnameESM, "../../server/ad-b.html"));
+  });
+
   // Convenience redirect: /download → /ad
   app.get("/download", (_req, res) => {
     res.redirect(301, "/ad");

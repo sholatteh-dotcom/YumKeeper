@@ -290,3 +290,12 @@
 - [x] Add /download redirect alias to /ad
 - [x] Wire Open Graph and Twitter Card meta tags for social sharing
 - [x] Link ad page to Privacy Policy, Terms of Service, and app download
+
+## Ad Page Round 2
+- [x] Generate downloadable promotional video for YumKeeper
+- [x] Add video demo section to /ad page (autoplay muted + download button)
+- [x] Create /ad-b A/B variant with alternative headline
+- [x] Add UTM parameter tracking to all CTA links on both ad variants
+- [x] Add EN/NL/DE/FR language switcher to /ad page
+- [x] Add EN/NL/DE/FR language switcher to /ad-b page
+- [x] Add /ad-b route to Express server
