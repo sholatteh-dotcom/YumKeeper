@@ -76,42 +76,40 @@ async function startServer() {
   // Served as plain HTML — no auth required.
   // Suitable for Google Play Store / Apple App Store privacy policy links.
 
+  // Use process.cwd() as base — always resolves to project root in both dev and production
+  const serverDir = path.join(process.cwd(), "server");
+
   // Serve shared legal UI assets (CSS + JS for cookie banner & language switcher)
-  app.use("/legal-assets", express.static(path.join(__dirnameESM, "../server/legal-assets")));
+  app.use("/api/legal-assets", express.static(path.join(serverDir, "legal-assets")));
 
-  app.get("/privacy-policy", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../server/privacy-policy.html"));
+  // ─── Public legal pages (served under /api/ so they reach Express in production) ───
+  app.get("/api/privacy-policy", (_req, res) => {
+    res.sendFile(path.join(serverDir, "privacy-policy.html"));
+  });
+  // Convenience redirect: /api/privacy → /api/privacy-policy
+  app.get("/api/privacy", (_req, res) => {
+    res.redirect(301, "/api/privacy-policy");
   });
 
-  // Convenience redirect: /privacy → /privacy-policy
-  app.get("/privacy", (_req, res) => {
-    res.redirect(301, "/privacy-policy");
+  app.get("/api/terms", (_req, res) => {
+    res.sendFile(path.join(serverDir, "terms.html"));
   });
-
-  app.get("/terms", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../server/terms.html"));
-  });
-
-  // Convenience redirect: /terms-of-service → /terms
-  app.get("/terms-of-service", (_req, res) => {
-    res.redirect(301, "/terms");
+  // Convenience redirect: /api/terms-of-service → /api/terms
+  app.get("/api/terms-of-service", (_req, res) => {
+    res.redirect(301, "/api/terms");
   });
 
   // ─── Promotional ad landing page ──────────────────────────────────────────
-  // Publicly shareable ad page with app download links and feature highlights.
-  // Suitable for Google Ads, social media, and app store listing links.
-  app.get("/ad", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../server/ad.html"));
+  app.get("/api/ad", (_req, res) => {
+    res.sendFile(path.join(serverDir, "ad.html"));
   });
-
   // A/B variant
-  app.get("/ad-b", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../server/ad-b.html"));
+  app.get("/api/ad-b", (_req, res) => {
+    res.sendFile(path.join(serverDir, "ad-b.html"));
   });
-
-  // Convenience redirect: /download → /ad
-  app.get("/download", (_req, res) => {
-    res.redirect(301, "/ad");
+  // Convenience redirect: /api/download → /api/ad
+  app.get("/api/download", (_req, res) => {
+    res.redirect(301, "/api/ad");
   });
 
   app.use(
