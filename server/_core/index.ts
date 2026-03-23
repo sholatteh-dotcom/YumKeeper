@@ -77,10 +77,10 @@ async function startServer() {
   // Suitable for Google Play Store / Apple App Store privacy policy links.
 
   // Serve shared legal UI assets (CSS + JS for cookie banner & language switcher)
-  app.use("/legal-assets", express.static(path.join(__dirnameESM, "../../server/legal-assets")));
+  app.use("/legal-assets", express.static(path.join(__dirnameESM, "../server/legal-assets")));
 
   app.get("/privacy-policy", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../../server/privacy-policy.html"));
+    res.sendFile(path.join(__dirnameESM, "../server/privacy-policy.html"));
   });
 
   // Convenience redirect: /privacy → /privacy-policy
@@ -89,7 +89,7 @@ async function startServer() {
   });
 
   app.get("/terms", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../../server/terms.html"));
+    res.sendFile(path.join(__dirnameESM, "../server/terms.html"));
   });
 
   // Convenience redirect: /terms-of-service → /terms
@@ -101,12 +101,12 @@ async function startServer() {
   // Publicly shareable ad page with app download links and feature highlights.
   // Suitable for Google Ads, social media, and app store listing links.
   app.get("/ad", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../../server/ad.html"));
+    res.sendFile(path.join(__dirnameESM, "../server/ad.html"));
   });
 
   // A/B variant
   app.get("/ad-b", (_req, res) => {
-    res.sendFile(path.join(__dirnameESM, "../../server/ad-b.html"));
+    res.sendFile(path.join(__dirnameESM, "../server/ad-b.html"));
   });
 
   // Convenience redirect: /download → /ad
