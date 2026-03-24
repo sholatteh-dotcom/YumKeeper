@@ -305,3 +305,6 @@
 - [x] Update ReConsentModal links to /api/privacy-policy and /api/terms
 - [x] Update onboarding.tsx consent checkbox links to /api/privacy-policy and /api/terms
 - [x] Add /api/sitemap.xml route to Express server listing all public pages
+
+## Rebranding: Remove All FreshKeep References
+- [x] Replace all remaining "FreshKeep" text with "YumKeeper" across app source, server HTML, and config files

@@ -139,7 +139,7 @@ export default function SettingsScreen() {
         {
           text: 'Clear All', style: 'destructive',
           onPress: async () => {
-            await AsyncStorage.removeItem('@freshkeep_inventory');
+            await AsyncStorage.removeItem('@yumkeeper_inventory');
             Alert.alert('Done', 'All inventory data has been cleared. Restart the app to see changes.');
           }
         }

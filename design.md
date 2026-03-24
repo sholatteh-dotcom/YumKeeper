@@ -1,9 +1,9 @@
-# FreshKeep – Food Preservation App Design Plan
+# YumKeeper – Food Preservation App Design Plan
 
 ## Brand Identity
 
-- **App Name**: FreshKeep
-- **Tagline**: Keep it fresh, waste less
+- **App Name**: YumKeeper
+- **Tagline**: Stop wasting food. Save money. Keep your pantry perfectly fresh.
 - **Primary Color**: `#2D8A4E` (Forest Green) – evokes freshness, nature, food
 - **Accent Color**: `#F4A228` (Warm Amber) – warmth, harvest, urgency for expiry
 - **Background (Light)**: `#F9FAF7` – soft off-white with green tint

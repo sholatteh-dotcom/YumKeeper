@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useReducer, useCallback } 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FoodItem, StorageLocation, getExpiryStatus } from './food-data';
 
-const STORAGE_KEY = '@freshkeep_inventory';
+const STORAGE_KEY = '@yumkeeper_inventory';
 
 interface FoodState {
   items: FoodItem[];
