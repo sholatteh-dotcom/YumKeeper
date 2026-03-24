@@ -321,3 +321,9 @@
 - [x] Generate Google Play feature graphic (1024x500)
 - [x] Generate phone screenshots (at least 2, 1080x1920)
 - [ ] Add icon to /api/ad hero section
+
+## Google Play Submission Assets (Round 2)
+- [x] Generate 7-inch tablet screenshot (1200x1920)
+- [x] Write keyword-optimised full Play Store description (4000 chars)
+- [x] Write short description (80 chars)
+- [x] Draft complete Google Play Data Safety form guide
