@@ -308,3 +308,9 @@
 
 ## Rebranding: Remove All FreshKeep References
 - [x] Replace all remaining "FreshKeep" text with "YumKeeper" across app source, server HTML, and config files
+
+## Rebrand Completion (Round 2)
+- [x] Update app.config.ts appName to YumKeeper and update store metadata
+- [x] Regenerate app icon with YumKeeper branding (no FreshKeep text)
+- [x] Replace assets/images/icon.png, splash-icon.png, favicon.png, android-icon-foreground.png
+- [x] Update logoUrl in app.config.ts with new icon S3 URL
