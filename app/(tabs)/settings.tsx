@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/hooks/use-auth';
 
-const LEGAL_BASE_URL = 'https://freshkeep-ctbgrbwn.manus.space';
+const LEGAL_BASE_URL = 'https://freshkeep-ctbgrbwn.manus.space/api';
 
 async function openLegalPage(path: string): Promise<void> {
   const url = `${LEGAL_BASE_URL}${path}`;

@@ -3,8 +3,8 @@ import * as Haptics from "expo-haptics";
 import { useColors } from "@/hooks/use-colors";
 import { recordLegalConsent, CURRENT_POLICY_VERSION } from "@/lib/onboarding";
 
-const PRIVACY_URL = "https://freshkeep-ctbgrbwn.manus.space/privacy-policy";
-const TERMS_URL = "https://freshkeep-ctbgrbwn.manus.space/terms";
+const PRIVACY_URL = "https://freshkeep-ctbgrbwn.manus.space/api/privacy-policy";
+const TERMS_URL = "https://freshkeep-ctbgrbwn.manus.space/api/terms";
 
 interface ReConsentModalProps {
   visible: boolean;

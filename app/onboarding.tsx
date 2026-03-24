@@ -18,7 +18,7 @@ import { useColors } from "@/hooks/use-colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const LEGAL_BASE_URL = "https://freshkeep-ctbgrbwn.manus.space";
+const LEGAL_BASE_URL = "https://freshkeep-ctbgrbwn.manus.space/api";
 
 async function openLegalPage(path: string): Promise<void> {
   const url = `${LEGAL_BASE_URL}${path}`;

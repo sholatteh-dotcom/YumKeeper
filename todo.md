@@ -299,3 +299,9 @@
 - [x] Add EN/NL/DE/FR language switcher to /ad page
 - [x] Add EN/NL/DE/FR language switcher to /ad-b page
 - [x] Add /ad-b route to Express server
+
+## URL Fix & Sitemap (Round 7)
+- [x] Update Settings screen legal links to /api/privacy-policy and /api/terms
+- [x] Update ReConsentModal links to /api/privacy-policy and /api/terms
+- [x] Update onboarding.tsx consent checkbox links to /api/privacy-policy and /api/terms
+- [x] Add /api/sitemap.xml route to Express server listing all public pages
