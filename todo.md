@@ -314,3 +314,10 @@
 - [x] Regenerate app icon with YumKeeper branding (no FreshKeep text)
 - [x] Replace assets/images/icon.png, splash-icon.png, favicon.png, android-icon-foreground.png
 - [x] Update logoUrl in app.config.ts with new icon S3 URL
+
+## Google Play Store Assets
+- [x] Generate monochrome Android icon (white silhouette, transparent background)
+- [x] Replace assets/images/android-icon-monochrome.png
+- [x] Generate Google Play feature graphic (1024x500)
+- [x] Generate phone screenshots (at least 2, 1080x1920)
+- [ ] Add icon to /api/ad hero section
