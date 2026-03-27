@@ -330,3 +330,10 @@
 
 ## Tagline Update
 - [x] Update tagline to a friendlier version across all touchpoints (onboarding, ad pages, store listing, legal pages)
+
+## Personalised Greeting & Friendly Notifications
+- [x] Add name input field to onboarding slide 3 (optional, friendly prompt)
+- [x] Persist user's first name to AsyncStorage on onboarding completion
+- [x] Update Dashboard greeting to use stored name with time-of-day personalisation (Good morning/afternoon/evening, [Name] 👋)
+- [x] Soften expiry alert notification copy (e.g. "Hey! Your apple is best used in the next 2 days 🍎")
+- [x] Soften weekly digest notification copy to match friendly brand voice

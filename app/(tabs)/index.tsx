@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, FlatList, StyleSheet, Pressable
 } from 'react-native';
@@ -9,6 +9,7 @@ import { ScreenContainer } from '@/components/screen-container';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useColors } from '@/hooks/use-colors';
 import { useFoodContext } from '@/lib/food-context';
+import { getUserName } from '@/lib/onboarding';
 import { useSubscription, FREE_ITEM_LIMIT } from '@/lib/subscription-context';
 import {
   FoodItem, STORAGE_LOCATIONS, getDaysRemaining, formatDaysRemaining, getExpiryStatus,
@@ -116,8 +117,16 @@ export default function DashboardScreen() {
     return getMatchingRecipes(urgentNames).slice(0, 4);
   }, [urgentItems]);
 
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    getUserName().then(setUserName);
+  }, []);
+
   const today = new Date();
-  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 17 ? 'Good afternoon' : 'Good evening';
+  const hour = today.getHours();
+  const greetingBase = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const greeting = userName ? `${greetingBase}, ${userName}` : greetingBase;
   const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   const handleAddItem = () => {

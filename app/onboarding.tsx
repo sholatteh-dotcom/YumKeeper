@@ -7,13 +7,15 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
   ViewToken,
+  KeyboardAvoidingView,
 } from "react-native";
 import { router } from "expo-router";
 import * as Haptics from "expo-haptics";
 import * as WebBrowser from "expo-web-browser";
-import { markOnboardingComplete, recordLegalConsent } from "@/lib/onboarding";
+import { markOnboardingComplete, recordLegalConsent, saveUserName } from "@/lib/onboarding";
 import { useColors } from "@/hooks/use-colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -91,6 +93,35 @@ function OnboardingSlide({ slide, colors }: { slide: Slide; colors: ReturnType<t
           </View>
         ))}
       </View>
+    </View>
+  );
+}
+
+// ─── Name input (shown on last slide) ────────────────────────────────────────
+function NameInput({
+  value,
+  onChange,
+  colors,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  colors: ReturnType<typeof useColors>;
+}) {
+  return (
+    <View style={[styles.nameInputWrapper, { borderColor: value.trim() ? colors.primary : colors.border, backgroundColor: colors.surface }]}>
+      <Text style={styles.nameInputEmoji}>👋</Text>
+      <TextInput
+        style={[styles.nameInput, { color: colors.foreground }]}
+        placeholder="What's your first name? (optional)"
+        placeholderTextColor={colors.muted}
+        value={value}
+        onChangeText={onChange}
+        autoCapitalize="words"
+        autoCorrect={false}
+        returnKeyType="done"
+        maxLength={30}
+        accessibilityLabel="Enter your first name"
+      />
     </View>
   );
 }
@@ -175,6 +206,7 @@ export default function OnboardingScreen() {
   const colors = useColors();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [consentChecked, setConsentChecked] = useState(false);
+  const [userName, setUserName] = useState("");
   const flatListRef = useRef<FlatList<Slide>>(null);
 
   const isLast = currentIndex === SLIDES.length - 1;
@@ -204,6 +236,10 @@ export default function OnboardingScreen() {
     if (Platform.OS !== "web") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
+    // Save name if provided
+    if (userName.trim()) {
+      await saveUserName(userName.trim());
+    }
     // Record consent timestamp before completing onboarding
     await recordLegalConsent();
     await markOnboardingComplete();
@@ -211,6 +247,10 @@ export default function OnboardingScreen() {
   };
 
   const handleSkip = async () => {
+    // Save name even when skipping (if entered)
+    if (userName.trim()) {
+      await saveUserName(userName.trim());
+    }
     await markOnboardingComplete();
     router.replace("/(tabs)");
   };
@@ -226,7 +266,10 @@ export default function OnboardingScreen() {
   const ctaDisabled = isLast && !consentChecked;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       {/* Skip button */}
       {!isLast && (
         <Pressable
@@ -256,6 +299,11 @@ export default function OnboardingScreen() {
       {/* Bottom controls */}
       <View style={styles.bottomArea}>
         <DotIndicator total={SLIDES.length} current={currentIndex} colors={colors} />
+
+        {/* Name input — only visible on last slide */}
+        {isLast && (
+          <NameInput value={userName} onChange={setUserName} colors={colors} />
+        )}
 
         {/* Consent checkbox — only visible on last slide */}
         {isLast && (
@@ -295,7 +343,7 @@ export default function OnboardingScreen() {
           </Pressable>
         )}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -375,6 +423,27 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     fontWeight: "500",
+  },
+  // ─── Name input ───
+  nameInputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    borderRadius: 14,
+    borderWidth: 1.5,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 12,
+    gap: 10,
+  },
+  nameInputEmoji: {
+    fontSize: 20,
+  },
+  nameInput: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "500",
+    paddingVertical: 0,
   },
   // ─── Consent ───
   consentRow: {

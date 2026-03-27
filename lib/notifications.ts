@@ -97,14 +97,14 @@ export async function scheduleExpiryNotifications(
     for (const alertDay of alertDays) {
       if (daysLeft === alertDay) {
         const message = alertDay === 0
-          ? `${item.emoji} ${item.name} expires TODAY!`
+          ? `Hey! Your ${item.name} is best used today ${item.emoji}`
           : alertDay === 1
-          ? `${item.emoji} ${item.name} expires TOMORROW!`
-          : `${item.emoji} ${item.name} expires in ${alertDay} days`;
+          ? `Heads up! Your ${item.name} is best used tomorrow ${item.emoji}`
+          : `Just a nudge — your ${item.name} is best used in the next ${alertDay} days ${item.emoji}`;
 
         await Notifications.scheduleNotificationAsync({
           content: {
-            title: '🫙 YumKeeper Alert',
+            title: '🫙 Time to use something up!',
             body: message,
             data: { itemId: item.id },
             sound: true,
@@ -144,8 +144,8 @@ export async function scheduleWeeklyDigest(totalItems: number): Promise<void> {
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: '🫙 Your Weekly Food Summary',
-      body: `You have ${totalItems} item${totalItems !== 1 ? 's' : ''} in your pantry. Check what needs using up!`,
+      title: '🫙 Your weekly kitchen check-in',
+      body: `You've got ${totalItems} item${totalItems !== 1 ? 's' : ''} in your pantry. Let's see what needs some love this week!`,
       data: { type: 'weekly-digest' },
       sound: true,
     },
@@ -170,8 +170,8 @@ export async function scheduleTestNotification(item: FoodItem): Promise<void> {
 
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: '🫙 YumKeeper Alert',
-      body: `${item.emoji} ${item.name} is expiring soon! Check your inventory.`,
+      title: '🫙 Time to use something up!',
+      body: `Just a nudge — your ${item.name} is best used soon ${item.emoji}`,
       data: { itemId: item.id },
     },
     trigger: {

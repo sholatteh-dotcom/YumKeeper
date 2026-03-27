@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const STORAGE_KEY = "@yumkeeper:onboarding_complete";
 const CONSENT_KEY = "@yumkeeper:legal_consent";
+export const USER_NAME_KEY = "@yumkeeper:user_name";
 
 /**
  * Current policy version — must match CURRENT_POLICY_VERSION in server/legal-router.ts.
@@ -81,11 +82,34 @@ export async function needsReConsent(): Promise<boolean> {
 }
 
 /**
+ * Saves the user's first name for personalised greetings.
+ */
+export async function saveUserName(name: string): Promise<void> {
+  try {
+    await AsyncStorage.setItem(USER_NAME_KEY, name.trim());
+  } catch {
+    // Silently fail
+  }
+}
+
+/**
+ * Returns the user's stored first name, or null if not set.
+ */
+export async function getUserName(): Promise<string | null> {
+  try {
+    return await AsyncStorage.getItem(USER_NAME_KEY);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Resets onboarding state (for testing only).
  */
 export async function resetOnboarding(): Promise<void> {
   try {
     await AsyncStorage.removeItem(STORAGE_KEY);
     await AsyncStorage.removeItem(CONSENT_KEY);
+    await AsyncStorage.removeItem(USER_NAME_KEY);
   } catch {}
 }
