@@ -337,3 +337,8 @@
 - [x] Update Dashboard greeting to use stored name with time-of-day personalisation (Good morning/afternoon/evening, [Name] 👋)
 - [x] Soften expiry alert notification copy (e.g. "Hey! Your apple is best used in the next 2 days 🍎")
 - [x] Soften weekly digest notification copy to match friendly brand voice
+
+## Delete Account Web Page
+- [x] Create standalone /api/delete-account HTML page with email submission form
+- [x] Wire up POST handler to create deletion_requests record in DB
+- [x] Register route in Express server
