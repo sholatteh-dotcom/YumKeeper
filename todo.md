@@ -327,3 +327,6 @@
 - [x] Write keyword-optimised full Play Store description (4000 chars)
 - [x] Write short description (80 chars)
 - [x] Draft complete Google Play Data Safety form guide
+
+## Tagline Update
+- [x] Update tagline to a friendlier version across all touchpoints (onboarding, ad pages, store listing, legal pages)

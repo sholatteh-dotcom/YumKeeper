@@ -39,7 +39,7 @@ const SLIDES = [
     id: "welcome",
     emoji: "🫙",
     title: "Welcome to YumKeeper",
-    subtitle: "Stop wasting food. Save money.\nKeep your pantry perfectly fresh.",
+    subtitle: "Your kitchen's best friend — fresher food,\nhappier meals, and a little more money in your pocket.",
     bullets: [
       { icon: "📦", text: "Track everything in your fridge, freezer & pantry" },
       { icon: "⏰", text: "Get alerts before food expires" },

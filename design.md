@@ -3,7 +3,7 @@
 ## Brand Identity
 
 - **App Name**: YumKeeper
-- **Tagline**: Stop wasting food. Save money. Keep your pantry perfectly fresh.
+- **Tagline**: Your kitchen's best friend — fresher food, happier meals, and a little more money in your pocket.
 - **Primary Color**: `#2D8A4E` (Forest Green) – evokes freshness, nature, food
 - **Accent Color**: `#F4A228` (Warm Amber) – warmth, harvest, urgency for expiry
 - **Background (Light)**: `#F9FAF7` – soft off-white with green tint

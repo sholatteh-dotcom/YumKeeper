@@ -4,13 +4,13 @@
 YumKeeper
 
 ## Short Description (80 characters max)
-Track food expiry, cut waste & save money with smart pantry management.
+Your kitchen's best friend — track food, cut waste & save £800/year.
 
 ---
 
 ## Full Description (4,000 characters max)
 
-**Stop throwing money in the bin. YumKeeper keeps your food fresh and your wallet full.**
+**Meet YumKeeper — your kitchen's best friend for fresher food, happier meals, and a little more money in your pocket.**
 
 The average household wastes £800 worth of food every year — most of it because we simply forget what's in the fridge. YumKeeper fixes that. It's the smart pantry manager that tracks every item in your fridge, freezer, and cupboards, alerts you before food expires, and tells you exactly how to keep it fresh for longer.
 
