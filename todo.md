@@ -342,3 +342,10 @@
 - [x] Create standalone /api/delete-account HTML page with email submission form
 - [x] Wire up POST handler to create deletion_requests record in DB
 - [x] Register route in Express server
+
+## App Icon & Store Screenshots
+- [x] Generate polished app icon for YumKeeper
+- [x] Save icon to all required asset paths (icon.png, splash-icon.png, favicon.png, android-icon-foreground.png)
+- [x] Update app.config.ts logoUrl with new icon S3 URL
+- [x] Generate 7-inch tablet screenshot (1200x1920)
+- [x] Generate 10-inch tablet screenshot (1600x2560)
