@@ -349,3 +349,18 @@
 - [x] Update app.config.ts logoUrl with new icon S3 URL
 - [x] Generate 7-inch tablet screenshot (1200x1920)
 - [x] Generate 10-inch tablet screenshot (1600x2560)
+
+## Full Store Asset Pack
+- [ ] Phone screenshot 1 — Onboarding / Welcome screen (1080x1920)
+- [ ] Phone screenshot 2 — Dashboard with personalised greeting (1080x1920)
+- [ ] Phone screenshot 3 — Inventory list with filter pills (1080x1920)
+- [ ] Phone screenshot 4 — Add Item screen (1080x1920)
+- [ ] Phone screenshot 5 — Expiry alerts / Notifications screen (1080x1920)
+- [ ] Promotional video — 30-second app walkthrough (landscape 1920x1080)
+
+## iOS App Store Assets & Submission
+- [x] Generate 5 iPhone 6.7-inch screenshots (1290x2796)
+- [x] Generate 3 iPad 12.9-inch screenshots (2048x2732)
+- [x] Resize and compress all screenshots to Apple spec
+- [x] Write App Store listing copy (title, subtitle, description, keywords)
+- [x] Write EAS build and App Store Connect submission guide
