@@ -35,7 +35,7 @@ const env = {
   logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-RsVAwiN6rNkxq3XJjgEgyu.png",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
-  androidPackage: bundleId,
+  androidPackage: "com.yumkeeper.app",
 };
 
 const config: ExpoConfig = {

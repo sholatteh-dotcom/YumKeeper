@@ -364,3 +364,6 @@
 - [x] Resize and compress all screenshots to Apple spec
 - [x] Write App Store listing copy (title, subtitle, description, keywords)
 - [x] Write EAS build and App Store Connect submission guide
+
+## Package Name Update
+- [x] Change Android package name to com.yumkeeper.app in app.config.ts
