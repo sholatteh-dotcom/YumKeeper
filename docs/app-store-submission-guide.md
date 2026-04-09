@@ -203,3 +203,78 @@ Apple's review typically takes **1–3 business days** for a first submission.
 | Prepare a TestFlight build | Use `eas build --profile preview` to distribute to beta testers before the public release |
 | Set up App Store notifications | Enable email alerts in App Store Connect → Users and Access → Notifications |
 | Plan version 1.1 | Address any reviewer feedback and prepare the first update |
+
+---
+
+## Part 6 — Promoting from Internal Testing to Open Testing (Google Play)
+
+Once you have verified the internal test build works correctly on a physical device, follow these steps to promote it to Open Testing (public beta) and then to Production.
+
+### Pre-promotion Checklist
+
+| Item | Status |
+|------|--------|
+| App tested on at least one physical Android device | Required |
+| All core flows work end-to-end (add item, expiry alert, settings) | Required |
+| Privacy Policy URL live at `/api/privacy-policy` | Done |
+| Delete Account URL live at `/api/delete-account` | Done |
+| Data Safety form completed in Play Console | Required |
+| Content rating questionnaire completed | Required |
+| Store listing (title, description, screenshots, feature graphic) uploaded | Done |
+| App icon (512×512 PNG) uploaded | Done |
+| At least 2 phone screenshots uploaded | Done |
+| 7-inch and 10-inch tablet screenshots uploaded | Done |
+| `google-play-service-account.json` placed in project root | Required for `eas submit` |
+
+### Promotion Steps in Play Console
+
+1. Go to **Testing → Internal testing** and open the current release.
+2. Click **Promote release → Open testing**.
+3. Review the release notes — add a brief changelog such as *"Initial public beta release"*.
+4. Set the **rollout percentage** to 100% for open testing.
+5. Click **Save** then **Start rollout to Open testing**.
+
+### Moving to Production
+
+After gathering feedback from open testers:
+
+1. Go to **Testing → Open testing** and open the release.
+2. Click **Promote release → Production**.
+3. Set the rollout to a staged percentage (e.g. 10%) for a cautious launch, or 100% for a full launch.
+4. Click **Save** then **Start rollout to Production**.
+
+> **Note:** Google typically reviews new apps within 3–7 days before they appear publicly in the Play Store. Ensure all policy requirements are met before submitting to Production.
+
+---
+
+## Part 7 — iOS App Store: Promoting from TestFlight to Review
+
+### Pre-submission Checklist
+
+| Item | Status |
+|------|--------|
+| App tested on physical iPhone via TestFlight | Required |
+| All core flows work end-to-end | Required |
+| Privacy Policy URL live | Done |
+| Age rating questionnaire completed in App Store Connect | Required |
+| iPhone 6.7-inch screenshots uploaded | Done |
+| iPad 12.9-inch screenshots uploaded | Done |
+| App description, keywords, and subtitle filled in | Done |
+| `ascAppId` filled in `eas.json` | Pending — replace `REPLACE_WITH_APP_STORE_CONNECT_APP_ID` |
+
+### How to Find Your ascAppId
+
+1. Go to [appstoreconnect.apple.com](https://appstoreconnect.apple.com) → **My Apps → YumKeeper**.
+2. Click **App Information** in the left sidebar.
+3. The **Apple ID** field (a 9–10 digit number) is your `ascAppId`.
+4. Replace `REPLACE_WITH_APP_STORE_CONNECT_APP_ID` in `eas.json` with this number.
+
+### Submission Steps
+
+1. In App Store Connect, open YumKeeper → **App Store** tab.
+2. Click **+ Version** and enter `1.0.1`.
+3. Select the TestFlight build you want to submit.
+4. Fill in **What's New**: *"Initial release — track food freshness, get expiry alerts, and save money."*
+5. Click **Add for Review** then **Submit to App Review**.
+
+Apple typically reviews new apps within 24–48 hours.

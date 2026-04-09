@@ -80,9 +80,9 @@
         "releaseStatus": "draft"
       },
       "ios": {
-        "appleId": "",
-        "ascAppId": "",
-        "appleTeamId": ""
+        "appleId": "sholatteh@gmail.com",
+        "ascAppId": "REPLACE_WITH_APP_STORE_CONNECT_APP_ID",
+        "appleTeamId": "35FKQ84V74"
       }
     }
   }

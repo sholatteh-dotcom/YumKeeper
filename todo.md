@@ -378,3 +378,8 @@
 - [x] Bump version string to 1.0.1 in app.config.ts
 - [x] Configure eas.json submit profile with Google Play service account
 - [x] Document Google Play App Signing setup in submission guide
+
+## Release Next Steps (Round 2)
+- [x] Add iOS submit field instructions to eas.json comments
+- [x] Add open testing promotion checklist to submission guide
+- [x] Add service account key creation reminder to google-play-service-account-setup.md
