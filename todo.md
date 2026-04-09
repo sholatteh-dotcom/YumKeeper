@@ -370,3 +370,6 @@
 
 ## iOS Bundle ID Update
 - [x] Change iOS bundle identifier to com.yumkeeper.app in app.config.ts
+
+## Version Code Bump
+- [x] Set Android versionCode to 2 in app.config.ts for Play Store re-upload
