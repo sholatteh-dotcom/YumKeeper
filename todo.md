@@ -373,3 +373,8 @@
 
 ## Version Code Bump
 - [x] Set Android versionCode to 2 in app.config.ts for Play Store re-upload
+
+## Release Recommendations
+- [x] Bump version string to 1.0.1 in app.config.ts
+- [x] Configure eas.json submit profile with Google Play service account
+- [x] Document Google Play App Signing setup in submission guide

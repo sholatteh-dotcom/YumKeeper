@@ -63,3 +63,4 @@ Thumbs.db
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
+\n# Google Play service account key (sensitive — never commit)\ngoogle-play-service-account.json
