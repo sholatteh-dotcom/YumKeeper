@@ -383,3 +383,6 @@
 - [x] Add iOS submit field instructions to eas.json comments
 - [x] Add open testing promotion checklist to submission guide
 - [x] Add service account key creation reminder to google-play-service-account-setup.md
+
+## Privacy Compliance Documentation
+- [x] Add Part 8 — User Data & Privacy Compliance section to submission guide

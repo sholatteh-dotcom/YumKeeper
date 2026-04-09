@@ -278,3 +278,125 @@ After gathering feedback from open testers:
 5. Click **Add for Review** then **Submit to App Review**.
 
 Apple typically reviews new apps within 24–48 hours.
+
+---
+
+## Part 8 — User Data & Privacy Compliance
+
+This section explains how YumKeeper handles user data, what obligations apply under major privacy regulations, and how to correctly complete the data safety and privacy declarations required by both the Apple App Store and Google Play Store.
+
+---
+
+### 8.1 — How YumKeeper Handles User Data
+
+YumKeeper is designed as a **local-first, privacy-respecting application**. The table below summarises every category of data the app touches and how it is handled.
+
+| Data Category | What Is Stored | Where It Is Stored | Transmitted Externally? |
+|---------------|---------------|-------------------|------------------------|
+| Food inventory items (name, quantity, expiry date, location) | On device | `AsyncStorage` (device only) | No |
+| User's first name (optional, entered during onboarding) | On device | `AsyncStorage` (device only) | No |
+| Notification preferences and alert settings | On device | `AsyncStorage` (device only) | No |
+| Deletion requests (submitted via web form) | Server database | PostgreSQL (hosted server) | No — stored internally only |
+| App crash and diagnostic data | Not collected | N/A | No |
+| Advertising identifiers (IDFA/GAID) | Not collected | N/A | No |
+| Location data | Not collected | N/A | No |
+| Payment information | Not collected | N/A | No |
+
+**Summary:** YumKeeper does not collect, sell, or share any personal data with third parties. The only server-side data stored is a deletion request record (email address + timestamp), submitted voluntarily by the user via the `/api/delete-account` form.
+
+---
+
+### 8.2 — GDPR Compliance (European Union)
+
+The **General Data Protection Regulation (GDPR)** applies to any app used by people in the European Union, regardless of where the developer is based.
+
+**Lawful basis for processing.** The sole server-side data processed by YumKeeper — deletion request records — is processed under **Article 6(1)(c)** (legal obligation) and **Article 17** (right to erasure). No other personal data is processed server-side.
+
+**Data subject rights.** YumKeeper supports the following rights out of the box:
+
+| Right | How It Is Fulfilled |
+|-------|-------------------|
+| Right of access (Art. 15) | All data is stored locally on the user's device and is directly accessible to them |
+| Right to erasure (Art. 17) | Users submit a deletion request at `/api/delete-account`; data is purged within 30 days |
+| Right to data portability (Art. 20) | Not applicable — no personal data is held server-side beyond deletion requests |
+| Right to object (Art. 21) | Users can disable notifications at any time in Settings |
+
+**Data retention.** Deletion request records are retained for 30 days to allow processing, then permanently deleted by the automated daily purge job.
+
+**Privacy Policy.** A GDPR-compliant privacy policy is published at `https://freshkeep-ctbgrbwn.manus.space/api/privacy-policy`. It must be linked in both the App Store and Play Store listings.
+
+**Data Protection Officer (DPO).** For a solo developer or small team, a formal DPO is not required unless processing is carried out on a large scale. If YumKeeper grows significantly, revisit this requirement.
+
+---
+
+### 8.3 — CCPA Compliance (California, USA)
+
+The **California Consumer Privacy Act (CCPA)** applies if the app has users in California and the developer meets certain revenue or data volume thresholds. For most indie developers, the thresholds are not met, but it is best practice to comply regardless.
+
+**Key obligations:**
+
+- **Do not sell personal information.** YumKeeper does not sell any user data. No third-party advertising SDKs are integrated.
+- **Right to know.** Users can see all their data directly on their device (food inventory, settings).
+- **Right to delete.** Fulfilled via the `/api/delete-account` web form.
+- **Non-discrimination.** Users who exercise privacy rights are not treated differently.
+
+No additional in-app UI is required for CCPA compliance given YumKeeper's data-minimal architecture.
+
+---
+
+### 8.4 — Apple App Privacy (App Store Connect)
+
+When submitting to the App Store, Apple requires you to complete the **App Privacy** questionnaire in App Store Connect. Answer as follows for YumKeeper:
+
+**Question: Does your app collect data?**
+Select **"No, we do not collect data from this app."**
+
+This is accurate because all food inventory and settings data is stored locally on the device and is never transmitted to Apple, the developer, or any third party. The optional deletion request (email address) is submitted voluntarily by the user and is not collected passively by the app.
+
+> If Apple's reviewer questions this, reference the Privacy Policy URL (`https://freshkeep-ctbgrbwn.manus.space/api/privacy-policy`) and note that the only server interaction is a user-initiated deletion request form, which is not passive data collection.
+
+**Export Compliance.** When prompted during submission, answer **No** to the question about encryption. YumKeeper uses only standard HTTPS for network communication, which is exempt from export compliance requirements under US EAR (Export Administration Regulations).
+
+---
+
+### 8.5 — Google Play Data Safety Form
+
+Google Play requires all apps to complete a **Data Safety** declaration. Complete the form in Play Console → **Policy → App content → Data safety** as follows:
+
+| Question | Answer |
+|----------|--------|
+| Does your app collect or share any of the required user data types? | **No** |
+| Does your app use encryption in transit? | **Yes** — all server communication uses HTTPS/TLS |
+| Does your app provide a way for users to request data deletion? | **Yes** |
+| Data deletion URL | `https://freshkeep-ctbgrbwn.manus.space/api/delete-account` |
+
+Because YumKeeper does not collect any data types listed in Google's taxonomy (location, contacts, personal info, financial info, health info, messages, photos/videos, audio, files, calendar, app activity, web browsing, app info, device identifiers), the form can be completed quickly with predominantly "No" answers.
+
+---
+
+### 8.6 — In-App Privacy Best Practices
+
+The following practices are already implemented in YumKeeper and should be maintained in all future versions:
+
+**Minimal data collection.** The app requests only the permissions it needs. Camera permission is requested only when the barcode scanner is opened. Notification permission is requested only when the user enables alerts in Settings. No permissions are requested on first launch.
+
+**No third-party analytics or advertising SDKs.** YumKeeper does not integrate Firebase Analytics, Facebook SDK, Google AdMob, or any other third-party data collection library. This keeps the app's data footprint at zero and simplifies all privacy declarations.
+
+**Transparent permission prompts.** All iOS `NSUsageDescription` strings in `app.config.ts` clearly explain why each permission is needed (e.g. *"YumKeeper uses your camera to scan product barcodes and auto-fill food details."*). These descriptions must be honest and specific — vague descriptions are a common reason for App Store rejection.
+
+**Secure deletion.** The `/api/delete-account` endpoint records the deletion request in the database and triggers an automated purge job. The purge job permanently deletes all records associated with the user's email within 30 days, in compliance with GDPR Article 17.
+
+**Future considerations.** If cloud sync, user accounts, or third-party integrations (e.g. recipe APIs, supermarket loyalty cards) are added in future versions, a full privacy impact assessment should be conducted before release, and the Privacy Policy, App Privacy declaration, and Data Safety form must all be updated accordingly.
+
+---
+
+### 8.7 — Privacy Policy Maintenance
+
+The live Privacy Policy at `https://freshkeep-ctbgrbwn.manus.space/api/privacy-policy` must be kept up to date. Update it whenever:
+
+- A new data type is collected or processed.
+- A new third-party service or SDK is integrated.
+- The data retention period changes.
+- The app expands to a new jurisdiction with specific legal requirements (e.g. Brazil's LGPD, Canada's PIPEDA, Australia's Privacy Act).
+
+Both Apple and Google can reject app updates if the Privacy Policy URL is broken or if the declared data practices do not match the actual app behaviour.
