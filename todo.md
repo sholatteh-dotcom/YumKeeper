@@ -386,3 +386,6 @@
 
 ## Privacy Compliance Documentation
 - [x] Add Part 8 — User Data & Privacy Compliance section to submission guide
+
+## Release Notes
+- [x] Draft v1.0.1 release notes for Google Play and Apple App Store
