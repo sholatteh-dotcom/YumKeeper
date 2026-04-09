@@ -34,7 +34,7 @@ const env = {
   // Leave empty to use the default icon from assets/images/icon.png
   logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-RsVAwiN6rNkxq3XJjgEgyu.png",
   scheme: schemeFromBundleId,
-  iosBundleId: bundleId,
+  iosBundleId: "com.yumkeeper.app",
   androidPackage: "com.yumkeeper.app",
 };
 

@@ -367,3 +367,6 @@
 
 ## Package Name Update
 - [x] Change Android package name to com.yumkeeper.app in app.config.ts
+
+## iOS Bundle ID Update
+- [x] Change iOS bundle identifier to com.yumkeeper.app in app.config.ts
