@@ -7,7 +7,11 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json-summary", "lcov"],
       reportsDirectory: "./coverage",
-      include: ["server/_core/cookies.ts"],
+      include: [
+        "server/_core/cookies.ts",
+        "server/_core/session-routes.ts",
+        "server/legal-router.ts",
+      ],
       all: false,
       thresholds: {
         branches: 100,

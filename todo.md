@@ -403,3 +403,9 @@
 - [x] Add HTTP-level logout and session-cookie regression tests
 - [x] Configure threshold-enforced session-cookie coverage reporting
 - [x] Enforce active tests and upload coverage reports in CI
+
+## Authentication & Legal Quality Guardrails
+- [x] Add end-to-end session establishment, authenticated profile, and logout coverage
+- [x] Add mocked legal consent/deletion procedure coverage
+- [x] Enforce 100% coverage for session and legal policy modules
+- [ ] Require CI validation before merging to the GitHub main branch when repository plan permits (blocked: private-repository branch protections and rulesets are unavailable on the current GitHub plan)

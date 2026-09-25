@@ -113,5 +113,6 @@ Before automating iOS submission, create the YumKeeper App Store Connect record 
 - [ ] The Apple `.p8` key, Android `.jks`/`.keystore`, provisioning profiles, and Google service-account JSON are never committed.
 - [ ] The `production` GitHub environment requires release-team approval.
 - [ ] Release tags are protected.
+- [ ] The GitHub repository plan supports required status checks or rulesets; configure **Validate application** as a required main-branch check after the project workflow is mirrored to GitHub.
 - [ ] The first iOS and Android production builds have been verified interactively before CI is enabled.
 - [ ] App Store Connect and Google Play submissions remain deliberate, reviewed actions.
