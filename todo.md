@@ -389,3 +389,8 @@
 
 ## Release Notes
 - [x] Draft v1.0.1 release notes for Google Play and Apple App Store
+
+## Automated EAS Builds
+- [x] Add a protected GitHub Actions workflow for iOS and Android EAS builds
+- [x] Add automated build setup, security, and release-operation documentation
+- [x] Validate the workflow configuration and existing release profiles

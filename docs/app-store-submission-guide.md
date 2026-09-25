@@ -134,6 +134,10 @@ eas submit --platform ios
 
 EAS will upload the `.ipa` directly to App Store Connect using your Apple credentials. You will need to provide your **Apple ID** and an **App-Specific Password** (generated at [appleid.apple.com](https://appleid.apple.com) → Security → App-Specific Passwords).
 
+### Optional — Trigger protected builds from GitHub
+
+For a repeatable iOS and Android release-build process, use the repository's GitHub Actions workflow rather than starting ad hoc builds. It validates TypeScript, tests, and Expo configuration first, then requests separate EAS builds after the selected GitHub environment is approved. See [Automated EAS Builds](eas-build-automation.md) for the one-time `EXPO_TOKEN` secret setup, protected-environment configuration, release-tag trigger, and security requirements. The workflow creates builds only; store submission remains a deliberate follow-up step.
+
 ---
 
 ## Part 4 — App Store Connect Configuration
@@ -146,7 +150,7 @@ After the build is uploaded, complete the following in [App Store Connect](https
 2. Set **Platform**: iOS.
 3. Set **Name**: YumKeeper.
 4. Set **Primary Language**: English (UK) or English (US).
-5. Set **Bundle ID**: select the bundle ID from `app.config.ts` (e.g. `space.manus.food.preservation.app.tXXXXXXXX`).
+5. Set **Bundle ID**: select `com.yumkeeper.app`.
 6. Set **SKU**: `yumkeeper-001` (any unique string).
 
 ### 4.2 — App Information
