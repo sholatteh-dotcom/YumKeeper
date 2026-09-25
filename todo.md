@@ -409,3 +409,8 @@
 - [x] Add mocked legal consent/deletion procedure coverage
 - [x] Enforce 100% coverage for session and legal policy modules
 - [ ] Require CI validation before merging to the GitHub main branch when repository plan permits (blocked: private-repository branch protections and rulesets are unavailable on the current GitHub plan)
+
+## Webhook & Deletion Notification Integration Coverage
+- [x] Mirror checkpointed project source and workflows to GitHub
+- [x] Add Stripe webhook integration coverage for checkout, updates, cancellations, and failure handling
+- [x] Extract and test public deletion-request notification handling

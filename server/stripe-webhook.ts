@@ -3,11 +3,32 @@ import Stripe from "stripe";
 import * as db from "./db";
 import { tierFromPriceId } from "./stripe-router";
 
+export type StripeWebhookDependencies = {
+  retrieveSubscription: (subscriptionId: string) => Promise<Stripe.Subscription>;
+  upsertSubscription: typeof db.upsertSubscription;
+  updateSubscriptionByCustomerId: typeof db.updateSubscriptionByCustomerId;
+};
+
+const productionDependencies: StripeWebhookDependencies = {
+  retrieveSubscription: async (subscriptionId) => {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not configured");
+
+    const stripe = new Stripe(stripeKey, { apiVersion: "2026-02-25.clover" as any });
+    return stripe.subscriptions.retrieve(subscriptionId);
+  },
+  upsertSubscription: db.upsertSubscription,
+  updateSubscriptionByCustomerId: db.updateSubscriptionByCustomerId,
+};
+
 /**
  * Registers the raw Stripe webhook endpoint on the Express app.
  * Must be registered BEFORE express.json() middleware so the raw body is available.
  */
-export function registerStripeWebhook(app: Express) {
+export function registerStripeWebhook(
+  app: Express,
+  dependencies: StripeWebhookDependencies = productionDependencies,
+) {
   // Raw body parser for Stripe webhook verification
   app.post(
     "/api/stripe/webhook",
@@ -52,7 +73,7 @@ export function registerStripeWebhook(app: Express) {
       }
 
       try {
-        await handleStripeEvent(event);
+        await handleStripeEvent(event, dependencies);
         res.json({ received: true });
       } catch (err: any) {
         console.error("[Stripe Webhook] Handler error:", err);
@@ -62,7 +83,10 @@ export function registerStripeWebhook(app: Express) {
   );
 }
 
-async function handleStripeEvent(event: Stripe.Event) {
+export async function handleStripeEvent(
+  event: Stripe.Event,
+  dependencies: StripeWebhookDependencies = productionDependencies,
+) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
@@ -75,14 +99,12 @@ async function handleStripeEvent(event: Stripe.Event) {
       if (!userId || !customerId || !subscriptionId) break;
 
       // Retrieve full subscription to get price details
-      const stripeKey = process.env.STRIPE_SECRET_KEY!;
-      const stripe = new Stripe(stripeKey, { apiVersion: "2026-02-25.clover" as any });
-      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      const subscription = await dependencies.retrieveSubscription(subscriptionId);
       const priceId = subscription.items.data[0]?.price.id ?? "";
       const interval = (subscription.items.data[0]?.price.recurring?.interval ?? "month") as "month" | "year";
       const tier = tierFromPriceId(priceId);
 
-      await db.upsertSubscription({
+      await dependencies.upsertSubscription({
         userId,
         stripeCustomerId: customerId,
         stripeSubscriptionId: subscriptionId,
@@ -106,7 +128,7 @@ async function handleStripeEvent(event: Stripe.Event) {
       const tier = tierFromPriceId(priceId);
       const isActive = subscription.status === "active" || subscription.status === "trialing";
 
-      await db.updateSubscriptionByCustomerId(customerId, {
+      await dependencies.updateSubscriptionByCustomerId(customerId, {
         stripeSubscriptionId: subscription.id,
         stripePriceId: priceId,
         tier: isActive ? tier : "free",
@@ -124,7 +146,7 @@ async function handleStripeEvent(event: Stripe.Event) {
       const subscription = event.data.object as Stripe.Subscription;
       const customerId = subscription.customer as string;
 
-      await db.updateSubscriptionByCustomerId(customerId, {
+      await dependencies.updateSubscriptionByCustomerId(customerId, {
         tier: "free",
         status: "canceled",
         cancelAtPeriodEnd: false,

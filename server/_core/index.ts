@@ -12,6 +12,7 @@ const __filename = typeof __dirname !== "undefined" ? "" : fileURLToPath(import.
 const __dirnameESM = typeof __dirname !== "undefined" ? __dirname : path.dirname(__filename);
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
+import { registerPublicDeletionRequestRoute } from "./public-deletion-request";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { registerStripeWebhook } from "../stripe-webhook";
@@ -117,36 +118,7 @@ async function startServer() {
     res.sendFile(path.join(serverDir, "delete-account.html"));
   });
 
-  // POST: log an email-based deletion request (no auth required)
-  app.post("/api/delete-account", async (req, res) => {
-    const { email, reason } = req.body as { email?: string; reason?: string };
-    if (!email || !email.includes("@")) {
-      res.status(400).json({ error: "Valid email required" });
-      return;
-    }
-    try {
-      const { getDb } = await import("../db");
-      const { deletionRequests } = await import("../../drizzle/schema");
-      const db = await getDb();
-      if (db) {
-        await db.insert(deletionRequests).values({
-          userId: null as unknown as number,
-          requestedAt: new Date(),
-          status: "pending",
-          notes: `Web form submission \u2014 email: ${email}${reason ? `; reason: ${reason}` : ""}`,
-        });
-      }
-      // Notify owner
-      await notifyOwner({
-        title: "New deletion request (web form)",
-        content: `Email: ${email}\nReason: ${reason ?? "not provided"}`,
-      });
-      res.json({ ok: true });
-    } catch (err) {
-      console.error("[delete-account] DB error:", err);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  });
+  registerPublicDeletionRequestRoute(app);
 
   // ─── Sitemap ──────────────────────────────────────────────────────────────
   app.get("/api/sitemap.xml", (_req, res) => {
