@@ -398,3 +398,8 @@
 ## Automated Test Reliability
 - [x] Activate and repair the skipped authentication logout test
 - [x] Verify the complete suite runs without skipped tests
+
+## Test Coverage & CI Guardrails
+- [x] Add HTTP-level logout and session-cookie regression tests
+- [x] Configure threshold-enforced session-cookie coverage reporting
+- [x] Enforce active tests and upload coverage reports in CI

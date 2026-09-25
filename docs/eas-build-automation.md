@@ -6,11 +6,13 @@ This project includes a GitHub Actions workflow at [`.github/workflows/eas-build
 
 | Trigger | Validation | EAS profile | Build scope | Intended use |
 | --- | --- | --- | --- | --- |
-| Pull request | TypeScript, tests, and Expo configuration | None | No store build | Safe code review feedback |
-| Git tag beginning with `v` | TypeScript, tests, Expo configuration, and one approval gate | `production` | iOS `.ipa` and Android `.aab` | Versioned release candidate |
-| Manual workflow dispatch | TypeScript, tests, Expo configuration, and one approval gate | Chosen `preview` or `production` profile | Android, iOS, or both | Controlled test or release build |
+| Pull request | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, and Expo configuration | None | No store build | Safe code review feedback |
+| Git tag beginning with `v` | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, Expo configuration, and one approval gate | `production` | iOS `.ipa` and Android `.aab` | Versioned release candidate |
+| Manual workflow dispatch | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, Expo configuration, and one approval gate | Chosen `preview` or `production` profile | Android, iOS, or both | Controlled test or release build |
 
 > **Release safeguard:** Production builds are triggered only by a version-style tag such as `v1.0.2` or by a deliberate manual run. Protect the `production` GitHub environment to require an approval before EAS receives a production build request.
+
+> **Coverage safeguard:** The workflow runs `pnpm test:coverage`, which executes the complete Vitest suite and requires 100% statements, branches, functions, and lines for the session-cookie policy module. It rejects `describe.skip`, `it.skip`, and `test.skip` declarations under `tests/`, then retains the machine-readable LCOV and JSON summary as a 14-day workflow artifact.
 
 ## Current YumKeeper EAS configuration
 

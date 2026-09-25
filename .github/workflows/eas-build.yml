@@ -61,8 +61,24 @@ jobs:
       - name: Check TypeScript
         run: pnpm check
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run tests with coverage thresholds
+        run: pnpm test:coverage
+
+      - name: Reject skipped tests
+        run: |
+          if rg -n "(?:describe|it|test)\\.skip" tests; then
+            echo "Skipped tests are not allowed in the release validation suite."
+            exit 1
+          fi
+
+      - name: Upload coverage report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Validate Expo configuration
         run: pnpm exec expo config --type public
