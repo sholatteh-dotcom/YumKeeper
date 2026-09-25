@@ -32,7 +32,8 @@ const env = {
   appSlug: "yumkeeper-",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-RsVAwiN6rNkxq3XJjgEgyu.png",
+  logoUrl:
+    "https://d2xsxph8kpxj0f.cloudfront.net/310519663197064061/ctBGrbwN9xC2vyPM4QEdmo/icon-RsVAwiN6rNkxq3XJjgEgyu.png",
   scheme: schemeFromBundleId,
   iosBundleId: "com.yumkeeper.app",
   androidPackage: "com.yumkeeper.app",
@@ -125,6 +126,7 @@ const config: ExpoConfig = {
   },
   plugins: [
     "expo-router",
+    "expo-web-browser",
     "expo-asset",
     "expo-font",
     "expo-updates",
@@ -141,13 +143,15 @@ const config: ExpoConfig = {
     [
       "expo-camera",
       {
-        "cameraPermission": "Allow YumKeeper to access your camera to scan product barcodes."
-      }
+        cameraPermission:
+          "Allow YumKeeper to access your camera to scan product barcodes.",
+      },
     ],
     [
       "expo-audio",
       {
-        microphonePermission: "Allow $(PRODUCT_NAME) to access your microphone.",
+        microphonePermission:
+          "Allow $(PRODUCT_NAME) to access your microphone.",
       },
     ],
     [

@@ -4,11 +4,11 @@
 
 This project includes a GitHub Actions workflow at [`.github/workflows/eas-build.yml`](../.github/workflows/eas-build.yml). It validates the YumKeeper application before requesting managed EAS cloud builds for **both iOS and Android**. The workflow is deliberately limited to build creation: it does not upload a build to App Store Connect or Google Play, publish an over-the-air update, or alter store listings.
 
-| Trigger | Validation | EAS profile | Build scope | Intended use |
-| --- | --- | --- | --- | --- |
-| Pull request | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, and Expo configuration | None | No store build | Safe code review feedback |
-| Git tag beginning with `v` | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, Expo configuration, and one approval gate | `production` | iOS `.ipa` and Android `.aab` | Versioned release candidate |
-| Manual workflow dispatch | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, Expo configuration, and one approval gate | Chosen `preview` or `production` profile | Android, iOS, or both | Controlled test or release build |
+| Trigger                    | Validation                                                                                                      | EAS profile                              | Build scope                   | Intended use                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ----------------------------- | -------------------------------- |
+| Pull request               | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, and Expo configuration                    | None                                     | No store build                | Safe code review feedback        |
+| Git tag beginning with `v` | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, Expo configuration, and one approval gate | `production`                             | iOS `.ipa` and Android `.aab` | Versioned release candidate      |
+| Manual workflow dispatch   | TypeScript, 100%-threshold session-cookie coverage, no skipped tests, Expo configuration, and one approval gate | Chosen `preview` or `production` profile | Android, iOS, or both         | Controlled test or release build |
 
 > **Release safeguard:** Production builds are triggered only by a version-style tag such as `v1.0.2` or by a deliberate manual run. Protect the `production` GitHub environment to require an approval before EAS receives a production build request.
 
@@ -18,14 +18,30 @@ This project includes a GitHub Actions workflow at [`.github/workflows/eas-build
 
 The repository is already linked to EAS project `369cf431-4f4b-4518-ac98-dfa01d9b90a6`. The production profile in `eas.json` uses remote credentials, produces an Android App Bundle, enables automatic build-number incrementing, and targets the `production` update channel. The application identifiers are:
 
-| Platform | Identifier | Production artifact |
-| --- | --- | --- |
-| iOS | `com.yumkeeper.app` | Signed `.ipa` for App Store Connect/TestFlight |
-| Android | `com.yumkeeper.app` | Signed `.aab` for Google Play |
+| Platform | Identifier          | Production artifact                            |
+| -------- | ------------------- | ---------------------------------------------- |
+| iOS      | `com.yumkeeper.app` | Signed `.ipa` for App Store Connect/TestFlight |
+| Android  | `com.yumkeeper.app` | Signed `.aab` for Google Play                  |
 
 ## One-time setup
 
-### 1. Complete interactive EAS credentials once
+### 1. Use development builds instead of Expo Go
+
+The project includes `expo-dev-client`, which gives the `development` and `simulator` EAS profiles a native development build rather than relying on Expo Go. This matters because YumKeeper uses native capabilities such as notifications, camera/barcode scanning, and EAS Update that must be tested in the app's own native runtime.
+
+After pulling this change, create and install a fresh development build for any device or simulator used for testing:
+
+```bash
+eas build --platform android --profile development
+# or
+eas build --platform ios --profile development
+```
+
+Then start the JavaScript bundler with `pnpm exec expo start`; with `expo-dev-client` installed, it targets the installed development build. Rebuild the development app after changing native dependencies, Expo SDK versions, or `app.config.ts`.
+
+The `EAS_BUILD_NO_EXPO_GO_WARNING=true` setting remains in every EAS profile only to avoid a stale CLI warning. It is not a substitute for the installed development client.
+
+### 2. Complete interactive EAS credentials once
 
 EAS build requests from CI are non-interactive. Before enabling tag builds, complete the current interactive iOS credentials flow by choosing **Generate new Apple Provisioning Profile** after the Apple Distribution Certificate is created. Then confirm that this succeeds at least once from a trusted local terminal:
 
@@ -41,11 +57,11 @@ eas build --platform android --profile production
 
 If YumKeeper is updating an existing Google Play listing, the remote EAS keystore must be the original Google Play upload key, or the listing must use an approved Play App Signing upload-key reset. A new EAS keystore cannot update a listing that expects a different upload certificate.
 
-### 2. Mirror the repository to GitHub
+### 3. Mirror the repository to GitHub
 
 This current project remote is managed by the development platform, rather than GitHub. GitHub Actions begins only after this repository is pushed or mirrored to a GitHub repository. Add the workflow file in this repository to that GitHub repository before relying on tag builds.
 
-### 3. Create the Expo access-token secret
+### 4. Create the Expo access-token secret
 
 Create a dedicated Expo personal access token at [Expo account access tokens](https://expo.dev/accounts/settings/access-tokens). In the GitHub repository, open **Settings → Secrets and variables → Actions**, then create a repository secret named:
 
@@ -55,7 +71,7 @@ EXPO_TOKEN
 
 Paste the token only into the GitHub secret value. Do not place it in `eas.json`, an `.env` file, source code, build logs, or chat. Use a token owned by an Expo account that has access to the YumKeeper EAS project, and revoke/rotate it if a maintainer leaves the release team.
 
-### 4. Protect release environments and tags
+### 5. Protect release environments and tags
 
 In **Settings → Environments**, create environments named `preview` and `production`. For `production`, add the appropriate required reviewer(s) and limit deployment branches/tags to protected release tags where available. The workflow’s single approval job uses these environment names before either platform build is requested.
 
@@ -86,26 +102,26 @@ The `preview` profile is for internal distribution. On iOS it may require an Ad 
 
 ## What is and is not automated
 
-| Activity | Included | Reason |
-| --- | --- | --- |
-| TypeScript and test validation | Yes | Prevents known application failures from reaching EAS. |
-| Expo configuration validation | Yes | Confirms the committed configuration can be resolved. |
-| iOS and Android EAS build requests | Yes | Creates managed, signed cloud build jobs. |
-| Apple/Google store submission | No | Store submission remains an explicit release decision and requires complete store configuration. |
-| EAS credential generation or repair | No | Apple and Android credential setup may require interactive platform authorization. |
-| Google Play service-account key handling | No | The sensitive JSON key remains local and ignored by Git. |
+| Activity                                 | Included | Reason                                                                                           |
+| ---------------------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| TypeScript and test validation           | Yes      | Prevents known application failures from reaching EAS.                                           |
+| Expo configuration validation            | Yes      | Confirms the committed configuration can be resolved.                                            |
+| iOS and Android EAS build requests       | Yes      | Creates managed, signed cloud build jobs.                                                        |
+| Apple/Google store submission            | No       | Store submission remains an explicit release decision and requires complete store configuration. |
+| EAS credential generation or repair      | No       | Apple and Android credential setup may require interactive platform authorization.               |
+| Google Play service-account key handling | No       | The sensitive JSON key remains local and ignored by Git.                                         |
 
 Before automating iOS submission, create the YumKeeper App Store Connect record for `com.yumkeeper.app` and replace the `ascAppId` placeholder in `eas.json` with its numeric Apple ID. Before automating Android submission, configure the Google Play service account as described in [Google Play Service Account Setup](google-play-service-account-setup.md). Keep those actions separate from this build-only workflow until the first manual store submissions are verified.
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Resolution |
-| --- | --- | --- |
-| `Unauthorized` or login failure | `EXPO_TOKEN` is absent, invalid, expired, or lacks project access | Replace the GitHub secret with a current token from an authorized Expo account. |
-| iOS CI build says credentials are missing | The first interactive signing setup was not completed | Finish the Apple certificate/provisioning-profile flow and complete one manual production build. |
-| iOS preview build fails on provisioning | No eligible Ad Hoc profile or registered device | Register the test device and refresh the Ad Hoc profile, or select the production profile for a TestFlight build. |
-| Android upload later reports a wrong signing key | The existing Play listing expects the original upload certificate | Restore the original upload key in EAS or complete Google Play’s upload-key reset process. |
-| A tag does not start a build | The code was not pushed to the GitHub repository, the tag does not begin with `v`, or Actions is disabled | Push the workflow and tag to GitHub, use a tag such as `v1.0.2`, and verify repository Actions permissions. |
+| Symptom                                          | Likely cause                                                                                              | Resolution                                                                                                        |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `Unauthorized` or login failure                  | `EXPO_TOKEN` is absent, invalid, expired, or lacks project access                                         | Replace the GitHub secret with a current token from an authorized Expo account.                                   |
+| iOS CI build says credentials are missing        | The first interactive signing setup was not completed                                                     | Finish the Apple certificate/provisioning-profile flow and complete one manual production build.                  |
+| iOS preview build fails on provisioning          | No eligible Ad Hoc profile or registered device                                                           | Register the test device and refresh the Ad Hoc profile, or select the production profile for a TestFlight build. |
+| Android upload later reports a wrong signing key | The existing Play listing expects the original upload certificate                                         | Restore the original upload key in EAS or complete Google Play’s upload-key reset process.                        |
+| A tag does not start a build                     | The code was not pushed to the GitHub repository, the tag does not begin with `v`, or Actions is disabled | Push the workflow and tag to GitHub, use a tag such as `v1.0.2`, and verify repository Actions permissions.       |
 
 ## Security checklist
 
