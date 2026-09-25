@@ -24,7 +24,13 @@ function isSecureRequest(req: Request) {
  * e.g., "3000-xxx.manuspre.computer" -> ".manuspre.computer"
  * This allows cookies set by 3000-xxx to be read by 8081-xxx
  */
-function getParentDomain(hostname: string): string | undefined {
+function getParentDomain(hostname: string | undefined): string | undefined {
+  // Minimal request contexts, including direct tRPC callers, may not have a Host header.
+  // In that case, omitting the domain creates a host-only cookie, which is the safe default.
+  if (!hostname) {
+    return undefined;
+  }
+
   // Don't set domain for localhost or IP addresses
   if (LOCAL_HOSTS.has(hostname) || isIpAddress(hostname)) {
     return undefined;
@@ -47,7 +53,7 @@ function getParentDomain(hostname: string): string | undefined {
 export function getSessionCookieOptions(
   req: Request,
 ): Pick<CookieOptions, "domain" | "httpOnly" | "path" | "sameSite" | "secure"> {
-  const hostname = req.hostname;
+  const hostname = typeof req.hostname === "string" ? req.hostname : undefined;
   const domain = getParentDomain(hostname);
 
   return {
